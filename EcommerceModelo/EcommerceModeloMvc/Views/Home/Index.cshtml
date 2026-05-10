@@ -1,8 +1,50 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var categorias = ViewBag.Categorias as List<Categoria> ?? new();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Carrossel de Imagens -->
+<div id="carouselHome" class="carousel slide my-4" data-bs-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-bs-target="#carouselHome" data-bs-slide-to="0" class="active"></li>
+        <li data-bs-target="#carouselHome" data-bs-slide-to="1"></li>
+        <li data-bs-target="#carouselHome" data-bs-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="~/images/banner1.jpg" class="d-block w-100" alt="Banner 1">
+        </div>
+        <div class="carousel-item">
+            <img src="~/images/banner2.jpg" class="d-block w-100" alt="Banner 2">
+        </div>
+        <div class="carousel-item">
+            <img src="~/images/banner3.jpg" class="d-block w-100" alt="Banner 3">
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselHome" role="button" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Anterior</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselHome" role="button" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Próximo</span>
+    </a>
+</div>
+
+<!-- Listagem de Categorias -->
+<div class="container">
+    <h2 class="mb-4">Categorias</h2>
+    <div class="row">
+        @foreach (var categoria in categorias)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@categoria.Nome</h5>
+                        <a href="/Produtos?categoriaId=@categoria.Id" class="btn btn-primary">Ver produtos</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
