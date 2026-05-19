@@ -1,6 +1,7 @@
-using System.Diagnostics;
+using Application.Dtos.HomePage;
 using EcommerceModeloMvc.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace EcommerceModeloMvc.Controllers
 {
@@ -8,19 +9,24 @@ namespace EcommerceModeloMvc.Controllers
     {
         public IActionResult Index()
         {
-            // Mock de categorias
-            var categorias = new List<Categoria>
-                {
-                    new Categoria { Id = 1, Nome = "Camisetas" },
-                    new Categoria { Id = 2, Nome = "Calças" },
-                    new Categoria { Id = 3, Nome = "Vestidos" },
-                    new Categoria { Id = 4, Nome = "Acessórios" }
-                };
+            var homeDto = new HomeDto();
 
-            // Passa as categorias para a View
-            ViewBag.Categorias = categorias;
+            var categoriasDtos = new List<CategoriaDto>()
+             {
+                    new CategoriaDto { Nome = "Camisetas", ImagemBase64 = "/images/camisa2.jpg" },
+                    new CategoriaDto { Nome = "Calças", ImagemBase64 = "/images/calca2.jpg" },
+                    new CategoriaDto { Nome = "Vestidos", ImagemBase64 = "/images/vestido2.jpg" },
+             };
 
-            return View();
+            var produtosMaisVendidosDtos = new List<ProdutoDto>() {
+                new ProdutoDto {Nome = "Camisa1", FotoPrincipalBase64 = "/images/modelo.jfif" },
+                new ProdutoDto {Nome = "Camisa2", FotoPrincipalBase64 = "/images/modelo2.jpg" }
+            };
+
+            homeDto.Produtos = produtosMaisVendidosDtos;
+            homeDto.Categorias = categoriasDtos;
+
+            return View(homeDto);
         }
     }
 }

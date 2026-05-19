@@ -1,4 +1,9 @@
-﻿.carousel-inner img {
-    height: 400px; /* ajuste conforme necessário */
-    object-fit: cover;
+﻿.carousel-inner {
+    width: 100%; /* Garante que o card ocupe toda a largura da coluna */
+    height: 600px; /* Define uma altura maior para o card */
+    margin: 0 auto; /* Centraliza o card dentro da coluna */
+}
+
+.carousel-inner carousel-item img{
+    object-fit: cover; /* Redimensiona a imagem para caber sem cortar */
 }

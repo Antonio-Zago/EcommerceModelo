@@ -1,0 +1,25 @@
+﻿@model Application.Dtos.HomePage.CategoriaDto
+
+<link rel="stylesheet" href="~/css/cardCategorias.css" asp-append-version="true" />
+
+<div class="card-categoria-component">
+    <div class="card border-0">
+        <a href="/Produtos?categoriaId=1">
+            <img src="@Model.ImagemBase64" alt="@Model.Nome" class="img-fluid rounded mb-2" />
+        </a>
+        <div class="card-body">
+            <h5 class="card-title mt-2">@Model.Nome</h5>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    function scrollCategorias(valor) {
+        document.getElementById('categoriasContainer')
+            .scrollBy({
+                left: valor,
+                behavior: 'smooth'
+            });
+    }
+</script>

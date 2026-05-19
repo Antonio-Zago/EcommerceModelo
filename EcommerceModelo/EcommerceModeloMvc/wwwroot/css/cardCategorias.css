@@ -1,0 +1,74 @@
+﻿/* Estilo para o título */
+.card-categoria-component .card-title {
+    font-size: 1.0rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Define um tamanho maior para os cards */
+.card-categoria-component .card {
+    width: 100%; /* Garante que o card ocupe toda a largura da coluna */
+    height: 500px; /* Define uma altura maior para o card */
+    margin: 0 auto; /* Centraliza o card dentro da coluna */
+}
+
+    .card-categoria-component .card img {
+        height: 100%;
+        width: 100%; /* Garante que a imagem ocupe toda a largura */
+        object-fit: cover; /* Preenche todo o espeço e mantém a proporção */
+        object-position: top; /* Alinha o topo da imagem com o topo do card */
+        background-color: #f8f9fa; /* Adiciona um fundo neutro para imagens menores */
+    }
+
+    .card-categoria-component .card a {
+        height: 80%;
+        width: 100%; /* Garante que a imagem ocupe toda a largura */
+    }
+
+.card-categoria-component .card-body {
+    height: 20%; /* O conteúdo ocupa o restante do espaço */
+    display: flex;
+    flex-direction: column;
+    text-align: center
+}
+
+
+/* Efeito de hover para os cards */
+.card-categoria-component .card:hover {
+    transform: scale(1.05); /* Aumenta levemente o tamanho */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra mais intensa */
+}
+
+.card-categoria-component .card .btn:hover {
+    background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+    color: #fff; /* Cor do texto */
+}
+
+
+.categorias-scroll {
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+    .categorias-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+.categoria-btn-left,
+.categoria-btn-right {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    z-index: 10;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+}
+
+.categoria-btn-left {
+    left: -20px;
+}
+
+.categoria-btn-right {
+    right: -20px;
+}
