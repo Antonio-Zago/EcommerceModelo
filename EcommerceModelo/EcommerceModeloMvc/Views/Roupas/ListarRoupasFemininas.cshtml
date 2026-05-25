@@ -1,0 +1,198 @@
+﻿@using Application.Dtos.HomePage
+@model IEnumerable<ProdutoDto>
+
+@{
+    ViewData["Title"] = "Roupas Femininas";
+}
+
+<link rel="stylesheet" href="~/css/listarRoupasFemininas.css" asp-append-version="true" />
+
+<h2 class="mb-4">Roupas Femininas</h2>
+
+<!-- Filtros -->
+<div class="row g-3">
+
+    <div class="mb-3">
+
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Gênero</button>
+        <ul class="dropdown-menu">
+            <li class="m-1">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="masculino">
+                    <label class="form-check-label" for="masculino">
+                        Masculino
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="feminino">
+                    <label class="form-check-label" for="feminino">
+                        Feminino
+                    </label>
+                </div>
+            </li>
+        </ul>
+
+
+        <!-- Categorias vão vir do controller -->
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Categoria</button>
+        <ul class="dropdown-menu">
+            <li class="m-1">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="camisas">
+                    <label class="form-check-label" for="camisas">
+                        Camisas
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="calcas">
+                    <label class="form-check-label" for="calcas">
+                        Calças
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="bermudas">
+                    <label class="form-check-label" for="bermudas">
+                        Bermudas
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="camisetas">
+                    <label class="form-check-label" for="camisetas">
+                        Camisetas
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="polos">
+                    <label class="form-check-label" for="polos">
+                        Polos
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="shorts">
+                    <label class="form-check-label" for="shorts">
+                        Shorts
+                    </label>
+                </div>
+            </li>
+        </ul>
+
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Cor</button>
+        <ul class="dropdown-menu">
+            <li class="m-1">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="preto">
+                    <label class="form-check-label" for="preto">
+                        Preto
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="branco">
+                    <label class="form-check-label" for="branco">
+                        Branco
+                    </label>
+                </div>
+            </li>
+        </ul>
+
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Marca</button>
+        <ul class="dropdown-menu">
+            <li class="m-1">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="nike">
+                    <label class="form-check-label" for="nike">
+                        Nike
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="adidas">
+                    <label class="form-check-label" for="adidas">
+                        Adidas
+                    </label>
+                </div>
+            </li>
+        </ul>
+
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Faixas de preço</button>
+        <ul class="dropdown-menu">
+            <li class="m-1">
+                <input type="range" class="form-range" min="0" max="100" value="50" id="faixa-preco">
+                <output for="faixa-preco" id="faixa-preco-value" aria-hidden="true"></output>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- Filtros Selecionados -->
+<div class="selected-filters mb-4">
+    <h5>Filtros Aplicados:</h5>
+
+    <div class="d-flex flex-wrap gap-2">
+
+        <span class="badge bg-primary">
+            Masculino
+        </span>
+
+    </div>
+</div>
+
+<div class="flex-grow-1 mb-4 border-bottom"></div>
+
+<!--Quantidade de resultados -->
+<div class="row mb-4">
+    
+    <div class="col-3">
+        
+            <select class="form-select">
+                <option selected>Ordenar por</option>
+                <option value="1">Preço do maior para o menor</option>
+                <option value="2">Preço do menor para o maior</option>
+                <option value="3">Mais vendidos</option>
+                <option value="4">Mais recentes</option>
+                <option value="5">Nome em ordem crescente</option>
+                <option value="6">Nome em ordem decrescente</option>
+            </select>
+
+    </div>
+
+    <div class="col-3">
+
+    </div>
+
+    <div class="col-6">
+        <div class="text-end">
+            <h6>30 de 1000 resultados</h6>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var produto in Model)
+        {
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-4">
+                @await Html.PartialAsync("_Card", produto)
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                Nenhuma roupa feminina encontrada.
+            </div>
+        </div>
+    }
+
+    <div class="col-12 text-center ">
+        <button type="button" class="btn btn-primary">Ver mais</button>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="~/js/filtrosRoupasFemininas.js" asp-append-version="true"></script>
+}

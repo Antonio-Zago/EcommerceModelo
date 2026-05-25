@@ -1,6 +1,7 @@
 ﻿.carousel-inner {
     width: 100%; /* Garante que o card ocupe toda a largura da coluna */
-    height: 600px; /* Define uma altura maior para o card */
+    max-height: 600px; /* Define uma altura maior para o card */
+    min-height: 300px
     margin: 0 auto; /* Centraliza o card dentro da coluna */
 }
 

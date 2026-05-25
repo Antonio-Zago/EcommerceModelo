@@ -41,14 +41,14 @@
             Categorias
         </h2>
 
-        <div class="flex-grow-1 ms-3 border-bottom"></div>
+        <div class="flex-grow-1 ms-3 "></div>
     </div>
 
     <div class="position-relative">
 
         <!-- Botão Esquerda -->
         <button class="btn btn-light shadow categoria-btn-left"
-                onclick="scrollCategorias(-300)">
+                onclick="scrollCategorias(-300, 'categoriasContainer')">
             ❮
         </button>
 
@@ -67,7 +67,7 @@
 
         <!-- Botão Direita -->
         <button class="btn btn-light shadow categoria-btn-right"
-                onclick="scrollCategorias(300)">
+                onclick="scrollCategorias(300, 'categoriasContainer')">
             ❯
         </button>
 
@@ -89,12 +89,12 @@
 
         <!-- Botão Esquerda -->
         <button class="btn btn-light shadow categoria-btn-left"
-                onclick="scrollCategorias(-300)">
+                onclick="scrollCategorias(-300, 'maisVendidosContainer')">
             ❮
         </button>
 
         <!-- Categorias -->
-        <div id="categoriasContainer"
+        <div id="maisVendidosContainer"
              class="d-flex overflow-auto gap-3 pb-3 categorias-scroll">
 
             @foreach (var produto in homeDto.Produtos)
@@ -108,7 +108,7 @@
 
         <!-- Botão Direita -->
         <button class="btn btn-light shadow categoria-btn-right"
-                onclick="scrollCategorias(300)">
+                onclick="scrollCategorias(300, 'maisVendidosContainer')">
             ❯
         </button>
 
@@ -131,12 +131,12 @@
 
         <!-- Botão Esquerda -->
         <button class="btn btn-light shadow categoria-btn-left"
-                onclick="scrollCategorias(-300)">
+                onclick="scrollCategorias(-300, 'novosProdutosContainer')">
             ❮
         </button>
 
         <!-- Categorias -->
-        <div id="categoriasContainer"
+        <div id="novosProdutosContainer"
              class="d-flex overflow-auto gap-3 pb-3 categorias-scroll">
 
             @foreach (var produto in homeDto.Produtos)
@@ -150,7 +150,7 @@
 
         <!-- Botão Direita -->
         <button class="btn btn-light shadow categoria-btn-right"
-                onclick="scrollCategorias(300)">
+                onclick="scrollCategorias(300, 'novosProdutosContainer')">
             ❯
         </button>
 
@@ -173,12 +173,12 @@
 
         <!-- Botão Esquerda -->
         <button class="btn btn-light shadow categoria-btn-left"
-                onclick="scrollCategorias(-300)">
+                onclick="scrollCategorias(-300, 'recomendadosContainer')">
             ❮
         </button>
 
         <!-- Categorias -->
-        <div id="categoriasContainer"
+        <div id="recomendadosContainer"
              class="d-flex overflow-auto gap-3 pb-3 categorias-scroll">
 
             @foreach (var produto in homeDto.Produtos)
@@ -192,7 +192,7 @@
 
         <!-- Botão Direita -->
         <button class="btn btn-light shadow categoria-btn-right"
-                onclick="scrollCategorias(300)">
+                onclick="scrollCategorias(300, 'recomendadosContainer')">
             ❯
         </button>
 
