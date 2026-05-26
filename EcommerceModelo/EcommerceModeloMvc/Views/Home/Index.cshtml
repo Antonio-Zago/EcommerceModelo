@@ -1,4 +1,4 @@
-﻿@using Application.Dtos.HomePage
+@using Application.Dtos.HomePage
 @model HomeDto
 
 @{
@@ -6,196 +6,112 @@
     var homeDto = Model ?? new();
 }
 
-<!-- Carrossel de Imagens -->
-<div id="carouselHome" class="carousel carousel-dark slide my-4" data-bs-ride="carousel">
-    <ol class="carousel-indicators">
-        <li data-bs-target="#carouselHome" data-bs-slide-to="0" class="active"></li>
-        <li data-bs-target="#carouselHome" data-bs-slide-to="1"></li>
-        <li data-bs-target="#carouselHome" data-bs-slide-to="2"></li>
-    </ol>
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="~/images/banner1.png" alt="Banner 1" class="d-block w-100">
+<!-- Carrossel full-bleed (quebra o padding do container) -->
+<div class="mx-n4 mx-md-n5">
+    <div id="carouselHome" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4500">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselHome" data-bs-slide-to="0" class="active" aria-current="true"></button>
+            <button type="button" data-bs-target="#carouselHome" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#carouselHome" data-bs-slide-to="2"></button>
         </div>
-        <div class="carousel-item">
-            <img src="~/images/banner2.png" alt="Banner 2" class="d-block w-100">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="~/images/banner1.png" alt="Banner 1" class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+                <img src="~/images/banner2.png" alt="Banner 2" class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+                <img src="~/images/banner3.png" alt="Banner 3" class="d-block w-100">
+            </div>
         </div>
-        <div class="carousel-item">
-            <img src="~/images/banner3.png" alt="Banner 3" class="d-block w-100">
-        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselHome" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselHome" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
     </div>
-    <a class="carousel-control-prev" href="#carouselHome" role="button" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Anterior</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselHome" role="button" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Próximo</span>
-    </a>
 </div>
 
-<div class="mt-5">
-
-    <div class="d-flex align-items-center mb-4">
-        <h2 class="fw-bold text-dark mb-0">
-            Categorias
-        </h2>
-
-        <div class="flex-grow-1 ms-3 "></div>
+<!-- Categorias -->
+<div class="mt-5 pt-2">
+    <div class="section-header">
+        <h2 class="section-title">Categorias</h2>
+        <a href="/Produtos" class="section-link">Ver todas →</a>
     </div>
-
-    <div class="position-relative">
-
-        <!-- Botão Esquerda -->
-        <button class="btn btn-light shadow categoria-btn-left"
-                onclick="scrollCategorias(-300, 'categoriasContainer')">
-            ❮
-        </button>
-
-        <!-- Categorias -->
-        <div id="categoriasContainer"
-             class="d-flex overflow-auto gap-3 pb-3 categorias-scroll">
-
+    <div class="scroll-section">
+        <button class="scroll-btn scroll-btn-left" onclick="scrollCategorias(-300, 'categoriasContainer')">❮</button>
+        <div id="categoriasContainer" class="items-scroll">
             @foreach (var categoria in homeDto.Categorias)
             {
-                <div style="min-width: 350px;">
+                <div style="min-width: 300px;">
                     @await Html.PartialAsync("_CardCategoria", categoria)
                 </div>
             }
-
         </div>
-
-        <!-- Botão Direita -->
-        <button class="btn btn-light shadow categoria-btn-right"
-                onclick="scrollCategorias(300, 'categoriasContainer')">
-            ❯
-        </button>
-
+        <button class="scroll-btn scroll-btn-right" onclick="scrollCategorias(300, 'categoriasContainer')">❯</button>
     </div>
-
 </div>
 
-<div class="mt-5">
-
-    <div class="d-flex align-items-center mb-4">
-        <h2 class="fw-bold text-dark mb-0">
-            Mais vendidos
-        </h2>
-
-        <div class="flex-grow-1 ms-3 border-bottom"></div>
+<!-- Mais Vendidos -->
+<div class="mt-5 pt-2">
+    <div class="section-header">
+        <h2 class="section-title">Mais vendidos</h2>
+        <a href="/Produtos" class="section-link">Ver todos →</a>
     </div>
-
-    <div class="position-relative">
-
-        <!-- Botão Esquerda -->
-        <button class="btn btn-light shadow categoria-btn-left"
-                onclick="scrollCategorias(-300, 'maisVendidosContainer')">
-            ❮
-        </button>
-
-        <!-- Categorias -->
-        <div id="maisVendidosContainer"
-             class="d-flex overflow-auto gap-3 pb-3 categorias-scroll">
-
+    <div class="scroll-section">
+        <button class="scroll-btn scroll-btn-left" onclick="scrollCategorias(-300, 'maisVendidosContainer')">❮</button>
+        <div id="maisVendidosContainer" class="items-scroll">
             @foreach (var produto in homeDto.Produtos)
             {
-                <div style="min-width: 350px;">
+                <div style="min-width: 280px;">
                     @await Html.PartialAsync("_Card", produto)
                 </div>
             }
-
         </div>
-
-        <!-- Botão Direita -->
-        <button class="btn btn-light shadow categoria-btn-right"
-                onclick="scrollCategorias(300, 'maisVendidosContainer')">
-            ❯
-        </button>
-
+        <button class="scroll-btn scroll-btn-right" onclick="scrollCategorias(300, 'maisVendidosContainer')">❯</button>
     </div>
-
 </div>
 
-
-<div class="mt-5">
-
-    <div class="d-flex align-items-center mb-4">
-        <h2 class="fw-bold text-dark mb-0">
-            Novos produtos que chegaram no estoque
-        </h2>
-
-        <div class="flex-grow-1 ms-3 border-bottom"></div>
+<!-- Novidades -->
+<div class="mt-5 pt-2">
+    <div class="section-header">
+        <h2 class="section-title">Novidades no estoque</h2>
+        <a href="/Produtos" class="section-link">Ver todos →</a>
     </div>
-
-    <div class="position-relative">
-
-        <!-- Botão Esquerda -->
-        <button class="btn btn-light shadow categoria-btn-left"
-                onclick="scrollCategorias(-300, 'novosProdutosContainer')">
-            ❮
-        </button>
-
-        <!-- Categorias -->
-        <div id="novosProdutosContainer"
-             class="d-flex overflow-auto gap-3 pb-3 categorias-scroll">
-
+    <div class="scroll-section">
+        <button class="scroll-btn scroll-btn-left" onclick="scrollCategorias(-300, 'novosProdutosContainer')">❮</button>
+        <div id="novosProdutosContainer" class="items-scroll">
             @foreach (var produto in homeDto.Produtos)
             {
-                <div style="min-width: 350px;">
+                <div style="min-width: 280px;">
                     @await Html.PartialAsync("_Card", produto)
                 </div>
             }
-
         </div>
-
-        <!-- Botão Direita -->
-        <button class="btn btn-light shadow categoria-btn-right"
-                onclick="scrollCategorias(300, 'novosProdutosContainer')">
-            ❯
-        </button>
-
+        <button class="scroll-btn scroll-btn-right" onclick="scrollCategorias(300, 'novosProdutosContainer')">❯</button>
     </div>
-
 </div>
 
-
-<div class="mt-5">
-
-    <div class="d-flex align-items-center mb-4">
-        <h2 class="fw-bold text-dark mb-0">
-            Recomendados para você
-        </h2>
-
-        <div class="flex-grow-1 ms-3 border-bottom"></div>
+<!-- Recomendados -->
+<div class="mt-5 pt-2">
+    <div class="section-header">
+        <h2 class="section-title">Recomendados para você</h2>
+        <a href="/Produtos" class="section-link">Ver todos →</a>
     </div>
-
-    <div class="position-relative">
-
-        <!-- Botão Esquerda -->
-        <button class="btn btn-light shadow categoria-btn-left"
-                onclick="scrollCategorias(-300, 'recomendadosContainer')">
-            ❮
-        </button>
-
-        <!-- Categorias -->
-        <div id="recomendadosContainer"
-             class="d-flex overflow-auto gap-3 pb-3 categorias-scroll">
-
+    <div class="scroll-section">
+        <button class="scroll-btn scroll-btn-left" onclick="scrollCategorias(-300, 'recomendadosContainer')">❮</button>
+        <div id="recomendadosContainer" class="items-scroll">
             @foreach (var produto in homeDto.Produtos)
             {
-                <div style="min-width: 350px;">
+                <div style="min-width: 280px;">
                     @await Html.PartialAsync("_Card", produto)
                 </div>
             }
-
         </div>
-
-        <!-- Botão Direita -->
-        <button class="btn btn-light shadow categoria-btn-right"
-                onclick="scrollCategorias(300, 'recomendadosContainer')">
-            ❯
-        </button>
-
+        <button class="scroll-btn scroll-btn-right" onclick="scrollCategorias(300, 'recomendadosContainer')">❯</button>
     </div>
-
 </div>

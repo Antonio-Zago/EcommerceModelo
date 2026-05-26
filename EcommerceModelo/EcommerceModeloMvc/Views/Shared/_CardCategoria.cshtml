@@ -1,15 +1,15 @@
-﻿@model Application.Dtos.HomePage.CategoriaDto
+@model Application.Dtos.HomePage.CategoriaDto
 
 <link rel="stylesheet" href="~/css/cardCategorias.css" asp-append-version="true" />
 
 <div class="card-categoria-component">
-    <div class="card border-0">
-        <a href="/Produtos?categoriaId=1">
-            <img src="@Model.ImagemBase64" alt="@Model.Nome" class="img-fluid rounded mb-2" />
-        </a>
-        <div class="card-body">
-            <h5 class="card-title mt-2">@Model.Nome</h5>
+    <a href="/Produtos?categoriaId=1" class="card-categoria-link">
+        <div class="card-categoria-img">
+            <img src="@Model.ImagemBase64" alt="@Model.Nome" />
+            <div class="card-categoria-overlay">
+                <span class="card-categoria-nome">@Model.Nome</span>
+                <span class="card-categoria-cta">Explorar →</span>
+            </div>
         </div>
-        
-    </div>
+    </a>
 </div>

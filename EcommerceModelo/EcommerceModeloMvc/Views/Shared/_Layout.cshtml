@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,34 +11,32 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logo.png" alt="Logo" style="height:100px; width:auto;" class="d-inline-block align-middle">
+        <nav class="navbar navbar-expand-md site-navbar">
+            <div class="container-fluid px-0">
+                <a class="navbar-brand me-4" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo.png" alt="Logo" style="height:52px; width:auto;" class="d-inline-block align-middle">
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="navbar-collapse collapse d-md-inline-flex justify-content-between align-items-center w-100">
+                    <ul class="navbar-nav gap-4 me-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Novidades</a>
+                            <a class="nav-link-custom" asp-area="" asp-controller="Roupas" asp-action="Novidades">Novidades</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Roupas" asp-action="ListarRoupasFemininas">Feminino</a>
+                            <a class="nav-link-custom" asp-area="" asp-controller="Roupas" asp-action="ListarRoupasFemininas">Feminino</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Masculino</a>
+                            <a class="nav-link-custom" asp-area="" asp-controller="Roupas" asp-action="ListarRoupasMasculinas">Masculino</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Infantil</a>
+                            <a class="nav-link-custom" asp-area="" asp-controller="Roupas" asp-action="ListarRoupasInfantis">Infantil</a>
                         </li>
                     </ul>
 
-                    <!-- Busca + Ações -->
                     <div class="d-flex align-items-center gap-3">
-
                         <!-- Busca -->
                         <form class="search-box d-flex align-items-center" method="get" action="/Produtos/Buscar">
                             <input type="search"
@@ -46,38 +44,76 @@
                                    aria-label="Buscar"
                                    name="q"
                                    class="search-input">
-
                             <button type="submit" class="search-button">
-                                🔍
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
                             </button>
                         </form>
 
                         <!-- Usuário -->
                         <a href="/Usuario" class="icon-button">
-                            👤
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
                         </a>
 
                         <!-- Carrinho -->
                         <a href="/Carrinho" class="icon-button">
-                            🛒
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
                         </a>
-
                     </div>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container-fluid px-4 px-md-5">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-5">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="site-footer">
         <div class="container">
-            &copy; 2026 - EcommerceModeloMvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row g-5">
+                <div class="col-md-4">
+                    <div class="footer-brand">EcommerceModelo</div>
+                    <p class="footer-tagline mt-2">Moda com estilo e qualidade<br>para todos os momentos.</p>
+                </div>
+                <div class="col-6 col-md-2">
+                    <h6>Categorias</h6>
+                    <a href="#">Novidades</a>
+                    <a href="#">Feminino</a>
+                    <a href="#">Masculino</a>
+                    <a href="#">Infantil</a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6>Ajuda</h6>
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a>
+                    <a href="#">Trocas e Devoluções</a>
+                    <a href="#">Fale Conosco</a>
+                    <a href="#">Perguntas Frequentes</a>
+                </div>
+                <div class="col-md-3">
+                    <h6>Institucional</h6>
+                    <a href="#">Sobre nós</a>
+                    <a href="#">Trabalhe Conosco</a>
+                    <a href="#">Lojas</a>
+                </div>
+            </div>
+            <div class="footer-bottom d-flex justify-content-between align-items-center">
+                <span>&copy; 2026 EcommerceModelo. Todos os direitos reservados.</span>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

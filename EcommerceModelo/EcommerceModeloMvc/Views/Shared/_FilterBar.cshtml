@@ -1,0 +1,58 @@
+@model List<EcommerceModeloMvc.ViewModels.FilterGroupViewModel>
+@using EcommerceModeloMvc.ViewModels
+
+<div class="filter-bar d-flex flex-wrap gap-2 mb-3">
+
+    @foreach (var group in Model)
+    {
+        <div class="dropdown">
+            <button class="filter-btn dropdown-toggle" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                @group.Label
+            </button>
+
+            @if (group.Type == FilterType.Range && group.Range != null)
+            {
+                <ul class="dropdown-menu filter-dropdown p-3" style="min-width: 220px;">
+                    <li>
+                        <label class="filter-range-label mb-2">
+                            Até <span id="@group.Range.OutputId">@group.Range.Value</span> R$
+                        </label>
+                        <input type="range" class="form-range filter-range"
+                               min="@group.Range.Min" max="@group.Range.Max"
+                               step="@group.Range.Step" value="@group.Range.Value"
+                               id="@group.Range.InputId">
+                    </li>
+                </ul>
+            }
+            else if (group.Type == FilterType.SizeGrid)
+            {
+                <ul class="dropdown-menu filter-dropdown">
+                    <li>
+                        <div class="size-grid">
+                            @foreach (var opt in group.Options)
+                            {
+                                <button class="size-btn" type="button">@opt.Label</button>
+                            }
+                        </div>
+                    </li>
+                </ul>
+            }
+            else
+            {
+                <ul class="dropdown-menu filter-dropdown">
+                    <li>
+                        @foreach (var opt in group.Options)
+                        {
+                            <div class="form-check filter-check">
+                                <input class="form-check-input" type="checkbox" value="" id="@opt.Id">
+                                <label class="form-check-label" for="@opt.Id">@opt.Label</label>
+                            </div>
+                        }
+                    </li>
+                </ul>
+            }
+        </div>
+    }
+
+</div>

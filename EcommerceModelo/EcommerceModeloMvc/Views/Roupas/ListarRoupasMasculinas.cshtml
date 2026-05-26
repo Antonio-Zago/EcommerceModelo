@@ -3,26 +3,16 @@
 @model IEnumerable<ProdutoDto>
 
 @{
-    ViewData["Title"] = "Feminino";
+    ViewData["Title"] = "Masculino";
 
     var breadcrumb = new List<BreadcrumbItem>
     {
         new("Início", "/"),
-        new("Feminino")
+        new("Masculino")
     };
 
     var filters = new List<FilterGroupViewModel>
     {
-        new()
-        {
-            Label = "Gênero",
-            Type  = FilterType.Checkbox,
-            Options =
-            [
-                new() { Id = "masculino", Label = "Masculino" },
-                new() { Id = "feminino",  Label = "Feminino"  },
-            ]
-        },
         new()
         {
             Label = "Categoria",
@@ -34,6 +24,7 @@
                 new() { Id = "bermudas",  Label = "Bermudas"  },
                 new() { Id = "camisetas", Label = "Camisetas" },
                 new() { Id = "polos",     Label = "Polos"     },
+                new() { Id = "jaquetas",  Label = "Jaquetas"  },
                 new() { Id = "shorts",    Label = "Shorts"    },
             ]
         },
@@ -45,6 +36,22 @@
             [
                 new() { Id = "preto",  Label = "Preto"  },
                 new() { Id = "branco", Label = "Branco" },
+                new() { Id = "azul",   Label = "Azul"   },
+                new() { Id = "cinza",  Label = "Cinza"  },
+            ]
+        },
+        new()
+        {
+            Label   = "Tamanho",
+            Type    = FilterType.SizeGrid,
+            Options =
+            [
+                new() { Id = "pp", Label = "PP" },
+                new() { Id = "p",  Label = "P"  },
+                new() { Id = "m",  Label = "M"  },
+                new() { Id = "g",  Label = "G"  },
+                new() { Id = "gg", Label = "GG" },
+                new() { Id = "xg", Label = "XG" },
             ]
         },
         new()
@@ -53,8 +60,10 @@
             Type  = FilterType.Checkbox,
             Options =
             [
-                new() { Id = "nike",   Label = "Nike"   },
-                new() { Id = "adidas", Label = "Adidas" },
+                new() { Id = "nike",    Label = "Nike"    },
+                new() { Id = "adidas",  Label = "Adidas"  },
+                new() { Id = "reserva", Label = "Reserva" },
+                new() { Id = "hering",  Label = "Hering"  },
             ]
         },
         new()
@@ -72,14 +81,14 @@
 
 @await Html.PartialAsync("_Breadcrumb", breadcrumb)
 
-<h1 class="page-title mb-4">Feminino</h1>
+<h1 class="page-title mb-4">Masculino</h1>
 
 @await Html.PartialAsync("_FilterBar", filters)
 
 <!-- Filtros aplicados -->
 <div class="active-filters mb-4" id="active-filters">
     <span class="filter-tag">
-        Feminino
+        Masculino
         <button type="button" class="filter-tag-remove" aria-label="Remover filtro">×</button>
     </span>
 </div>
@@ -102,7 +111,7 @@
     else
     {
         <div class="col-12 text-center py-5">
-            <p class="empty-state-text">Nenhuma roupa feminina encontrada.</p>
+            <p class="empty-state-text">Nenhuma roupa masculina encontrada.</p>
         </div>
     }
 </div>
@@ -110,5 +119,5 @@
 @await Html.PartialAsync("_VerMais", (string?)null)
 
 @section Scripts {
-    <script src="~/js/filtrosRoupasFemininas.js" asp-append-version="true"></script>
+    <script src="~/js/filtrosRoupasMasculinas.js" asp-append-version="true"></script>
 }

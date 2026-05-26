@@ -1,0 +1,21 @@
+@model EcommerceModeloMvc.ViewModels.ResultsBarViewModel
+
+<div class="results-bar d-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex align-items-center gap-2">
+        <span class="results-label">Ordenar:</span>
+        <select class="sort-select" id="ordenar">
+            @foreach (var opt in Model.SortOptions)
+            {
+                if (opt.Selected)
+                {
+                    <option value="@opt.Value" selected>@opt.Label</option>
+                }
+                else
+                {
+                    <option value="@opt.Value">@opt.Label</option>
+                }
+            }
+        </select>
+    </div>
+    <span class="result-count">@Model.Shown de @Model.Total.ToString("N0") resultados</span>
+</div>

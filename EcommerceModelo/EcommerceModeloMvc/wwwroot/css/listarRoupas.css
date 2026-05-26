@@ -1,3 +1,8 @@
+/* ================================================================
+   Estilos compartilhados entre páginas de listagem de roupas
+   Usados pelos partials: _Breadcrumb, _FilterBar, _ResultsBar, _VerMais
+   ================================================================ */
+
 /* ── Breadcrumb ── */
 .page-breadcrumb .breadcrumb {
     background: none;
@@ -30,7 +35,7 @@
     color: #ccc;
 }
 
-/* ── Título ── */
+/* ── Título da página ── */
 .page-title {
     font-family: 'Playfair Display', serif;
     font-size: 2.2rem;
@@ -109,6 +114,36 @@
     border: none;
 }
 
+/* ── Size Grid (filtro de tamanho) ── */
+.size-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 4px 8px 8px;
+}
+
+.size-btn {
+    background: #fff;
+    border: 1.5px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 4px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+}
+
+.size-btn:hover,
+.size-btn.active {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #fff;
+}
+
 /* ── Active Filters ── */
 .active-filters {
     display: flex;
@@ -183,7 +218,7 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* ── Divider ── */
+/* ── Divisor ── */
 .page-divider {
     height: 1px;
     background: #e8e8e8;

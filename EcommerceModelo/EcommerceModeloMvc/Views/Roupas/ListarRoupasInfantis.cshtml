@@ -3,12 +3,12 @@
 @model IEnumerable<ProdutoDto>
 
 @{
-    ViewData["Title"] = "Feminino";
+    ViewData["Title"] = "Infantil";
 
     var breadcrumb = new List<BreadcrumbItem>
     {
         new("Início", "/"),
-        new("Feminino")
+        new("Infantil")
     };
 
     var filters = new List<FilterGroupViewModel>
@@ -19,8 +19,9 @@
             Type  = FilterType.Checkbox,
             Options =
             [
-                new() { Id = "masculino", Label = "Masculino" },
-                new() { Id = "feminino",  Label = "Feminino"  },
+                new() { Id = "menino",    Label = "Menino"    },
+                new() { Id = "menina",    Label = "Menina"    },
+                new() { Id = "unissex",   Label = "Unissex"   },
             ]
         },
         new()
@@ -29,12 +30,26 @@
             Type  = FilterType.Checkbox,
             Options =
             [
-                new() { Id = "camisas",   Label = "Camisas"   },
-                new() { Id = "calcas",    Label = "Calças"    },
-                new() { Id = "bermudas",  Label = "Bermudas"  },
-                new() { Id = "camisetas", Label = "Camisetas" },
-                new() { Id = "polos",     Label = "Polos"     },
-                new() { Id = "shorts",    Label = "Shorts"    },
+                new() { Id = "camisetas",  Label = "Camisetas"  },
+                new() { Id = "calcas",     Label = "Calças"     },
+                new() { Id = "vestidos",   Label = "Vestidos"   },
+                new() { Id = "conjuntos",  Label = "Conjuntos"  },
+                new() { Id = "moletons",   Label = "Moletons"   },
+                new() { Id = "shorts",     Label = "Shorts"     },
+            ]
+        },
+        new()
+        {
+            Label   = "Idade",
+            Type    = FilterType.SizeGrid,
+            Options =
+            [
+                new() { Id = "0-2",   Label = "0–2"   },
+                new() { Id = "2-4",   Label = "2–4"   },
+                new() { Id = "4-6",   Label = "4–6"   },
+                new() { Id = "6-8",   Label = "6–8"   },
+                new() { Id = "8-10",  Label = "8–10"  },
+                new() { Id = "10-12", Label = "10–12" },
             ]
         },
         new()
@@ -43,25 +58,18 @@
             Type  = FilterType.Checkbox,
             Options =
             [
-                new() { Id = "preto",  Label = "Preto"  },
-                new() { Id = "branco", Label = "Branco" },
-            ]
-        },
-        new()
-        {
-            Label = "Marca",
-            Type  = FilterType.Checkbox,
-            Options =
-            [
-                new() { Id = "nike",   Label = "Nike"   },
-                new() { Id = "adidas", Label = "Adidas" },
+                new() { Id = "azul",      Label = "Azul"      },
+                new() { Id = "rosa",      Label = "Rosa"      },
+                new() { Id = "amarelo",   Label = "Amarelo"   },
+                new() { Id = "verde",     Label = "Verde"     },
+                new() { Id = "vermelho",  Label = "Vermelho"  },
             ]
         },
         new()
         {
             Label = "Preço",
             Type  = FilterType.Range,
-            Range = new() { Min = 0, Max = 1000, Step = 10, Value = 500 }
+            Range = new() { Min = 0, Max = 500, Step = 10, Value = 250 }
         },
     };
 
@@ -72,14 +80,14 @@
 
 @await Html.PartialAsync("_Breadcrumb", breadcrumb)
 
-<h1 class="page-title mb-4">Feminino</h1>
+<h1 class="page-title mb-4">Infantil</h1>
 
 @await Html.PartialAsync("_FilterBar", filters)
 
 <!-- Filtros aplicados -->
 <div class="active-filters mb-4" id="active-filters">
     <span class="filter-tag">
-        Feminino
+        Infantil
         <button type="button" class="filter-tag-remove" aria-label="Remover filtro">×</button>
     </span>
 </div>
@@ -102,7 +110,7 @@
     else
     {
         <div class="col-12 text-center py-5">
-            <p class="empty-state-text">Nenhuma roupa feminina encontrada.</p>
+            <p class="empty-state-text">Nenhuma roupa infantil encontrada.</p>
         </div>
     }
 </div>
@@ -110,5 +118,5 @@
 @await Html.PartialAsync("_VerMais", (string?)null)
 
 @section Scripts {
-    <script src="~/js/filtrosRoupasFemininas.js" asp-append-version="true"></script>
+    <script src="~/js/filtrosRoupasInfantis.js" asp-append-version="true"></script>
 }

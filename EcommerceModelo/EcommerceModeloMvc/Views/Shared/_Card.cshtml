@@ -1,16 +1,21 @@
-﻿@model Application.Dtos.HomePage.ProdutoDto
+@model Application.Dtos.HomePage.ProdutoDto
 
 <link rel="stylesheet" href="~/css/card.css" asp-append-version="true" />
 
 <div class="card-component">
-    <div class="card border-0">
-        <a href="/Produtos/Detalhes?produtoId=1">
-            <img src="@Model.FotoPrincipalBase64" alt="@Model.Nome" class="img-fluid w-100" />
-        </a>
-        <div class="card-body text-left">
-            <h5 class="card-title mt-2">@Model.Nome</h5>
-            <p class="card-text">Descrição curta</p>
-            <p class="card-text text-primary font-weight-bold">120 R$</p>
+    <div class="card">
+        <div class="card-img-wrapper">
+            <a href="/Produtos/Detalhes?produtoId=1">
+                <img src="@Model.FotoPrincipalBase64" alt="@Model.Nome" />
+            </a>
+            <div class="card-overlay">
+                <a href="/Produtos/Detalhes?produtoId=1" class="btn-comprar">Ver produto</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card-title">@Model.Nome</div>
+            <div class="card-desc">Descrição curta</div>
+            <div class="card-price">R$ 120,00</div>
         </div>
     </div>
 </div>
