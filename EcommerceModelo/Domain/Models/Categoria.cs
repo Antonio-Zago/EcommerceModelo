@@ -1,9 +1,15 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 public class Categoria
 {
+    [Column("id")]
     public int Id { get; set; }
+
+    [Column("nome")]
     public string Nome { get; set; } = string.Empty;
 
-    public string ImagemBase64 { get; set; }
+    [Column("imagemurl")]
+    public string ImagemUrl { get; set; }
 
     public ICollection<CategoriaProduto> CategoriasProdutos { get; set; } = new List<CategoriaProduto>();
 }

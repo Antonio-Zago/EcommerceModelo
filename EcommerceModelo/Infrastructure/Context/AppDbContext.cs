@@ -25,5 +25,20 @@ namespace Infrastructure.Context
         public DbSet<Produto> Produtos { get; set; }
 
         public DbSet<ProdutoImagem> ProdutoImagens { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // ── Tabelas ──────────────────────────────────────────────
+            modelBuilder.Entity<Categoria>()      .ToTable("categorias");
+            modelBuilder.Entity<Produto>()        .ToTable("produtos");
+            modelBuilder.Entity<CategoriaProduto>().ToTable("categorias_produtos");
+            modelBuilder.Entity<ProdutoImagem>()  .ToTable("Produto_imagens");
+            modelBuilder.Entity<Compra>()         .ToTable("compras");
+            modelBuilder.Entity<CompraItem>()     .ToTable("compra_itens");
+
+            // ── Chave composta — CategoriaProduto (N:N) ──────────────
+            modelBuilder.Entity<CategoriaProduto>()
+                .HasKey(cp => new { cp.ProdutoId, cp.CategoriaId });
+        }
     }
 }
