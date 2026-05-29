@@ -1,24 +1,37 @@
-﻿using Infrastructure.Context;
+using Application.Interfaces;
+using Application.Services;
+using Domain.Interfaces;
+using Infrastructure.Context;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CrossCutting.Ioc
+namespace CrossCutting.Ioc;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddInfraestructure(this IServiceCollection services, IConfigurationManager configuration)
     {
-        public static IServiceCollection AddInfraestructure(this IServiceCollection services, IConfigurationManager configuration)
-        {
-            var postgresConnection = configuration.GetConnectionString("DefaultConnection");
+        var postgresConnection = configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(postgresConnection));
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(postgresConnection));
 
-            return services;
-        }
+        // Repositories
+        services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+        services.AddScoped<IProdutoRepository, ProdutoRepository>();
+        services.AddScoped<ICompraRepository, CompraRepository>();
+        services.AddScoped<ICompraItemRepository, CompraItemRepository>();
+        services.AddScoped<IProdutoImagemRepository, ProdutoImagemRepository>();
+
+        // Services
+        services.AddScoped<IHomeService, HomeService>();
+        services.AddScoped<ICategoriaService, CategoriaService>();
+        services.AddScoped<IProdutoService, ProdutoService>();
+        services.AddScoped<ICompraService, CompraService>();
+        services.AddScoped<ICompraItemService, CompraItemService>();
+        services.AddScoped<IProdutoImagemService, ProdutoImagemService>();
+
+        return services;
     }
 }

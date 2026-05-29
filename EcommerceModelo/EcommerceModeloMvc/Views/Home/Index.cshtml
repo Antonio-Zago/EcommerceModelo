@@ -6,6 +6,8 @@
     var homeDto = Model ?? new();
 }
 
+<link rel="stylesheet" href="~/css/carrousel.css" asp-append-version="true" />
+
 <!-- Carrossel full-bleed (quebra o padding do container) -->
 <div class="mx-n4 mx-md-n5">
     <div id="carouselHome" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4500">
@@ -47,7 +49,7 @@
         <div id="categoriasContainer" class="items-scroll">
             @foreach (var categoria in homeDto.Categorias)
             {
-                <div style="min-width: 300px;">
+                <div style="min-width: 300px; width: 300px; flex-shrink: 0;">
                     @await Html.PartialAsync("_CardCategoria", categoria)
                 </div>
             }
@@ -65,7 +67,7 @@
     <div class="scroll-section">
         <button class="scroll-btn scroll-btn-left" onclick="scrollCategorias(-300, 'maisVendidosContainer')">❮</button>
         <div id="maisVendidosContainer" class="items-scroll">
-            @foreach (var produto in homeDto.Produtos)
+            @foreach (var produto in homeDto.MaisVendidos)
             {
                 <div style="min-width: 280px;">
                     @await Html.PartialAsync("_Card", produto)
@@ -85,7 +87,7 @@
     <div class="scroll-section">
         <button class="scroll-btn scroll-btn-left" onclick="scrollCategorias(-300, 'novosProdutosContainer')">❮</button>
         <div id="novosProdutosContainer" class="items-scroll">
-            @foreach (var produto in homeDto.Produtos)
+            @foreach (var produto in homeDto.Novidades)
             {
                 <div style="min-width: 280px;">
                     @await Html.PartialAsync("_Card", produto)
@@ -105,7 +107,7 @@
     <div class="scroll-section">
         <button class="scroll-btn scroll-btn-left" onclick="scrollCategorias(-300, 'recomendadosContainer')">❮</button>
         <div id="recomendadosContainer" class="items-scroll">
-            @foreach (var produto in homeDto.Produtos)
+            @foreach (var produto in homeDto.Recomendados)
             {
                 <div style="min-width: 280px;">
                     @await Html.PartialAsync("_Card", produto)

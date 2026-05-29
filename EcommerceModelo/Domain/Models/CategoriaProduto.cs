@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Domain.Models;
+
 public class CategoriaProduto
 {
     [Column("produto")]

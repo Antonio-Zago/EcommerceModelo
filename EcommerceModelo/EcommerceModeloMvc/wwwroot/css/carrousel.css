@@ -1,19 +1,60 @@
 #carouselHome {
     width: 100%;
-    max-height: 620px;
+    height: 600px;
     overflow: hidden;
 }
 
 #carouselHome .carousel-inner {
-    max-height: 620px;
+    height: 600px;
+}
+
+#carouselHome .carousel-item {
+    height: 600px;
 }
 
 #carouselHome .carousel-item img {
     width: 100%;
-    height: 100%;
-    max-height: 620px;
+    height: 600px;
     object-fit: cover;
-    object-position: center;
+    object-position: center top;
+}
+
+/* Setas de navegação */
+#carouselHome .carousel-control-prev,
+#carouselHome .carousel-control-next {
+    width: 56px;
+    height: 56px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    opacity: 0;
+    transition: opacity 0.3s, background 0.3s;
+    margin: 0 1rem;
+}
+
+#carouselHome:hover .carousel-control-prev,
+#carouselHome:hover .carousel-control-next {
+    opacity: 1;
+}
+
+#carouselHome .carousel-control-prev:hover,
+#carouselHome .carousel-control-next:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+#carouselHome .carousel-control-prev-icon,
+#carouselHome .carousel-control-next-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Indicadores */
+#carouselHome .carousel-indicators {
+    margin-bottom: 1.25rem;
+    gap: 6px;
 }
 
 #carouselHome .carousel-indicators [data-bs-target] {
@@ -22,9 +63,9 @@
     border-radius: 50%;
     border: none;
     opacity: 0.5;
-    margin: 0 4px;
     background-color: #fff;
     transition: opacity 0.3s, width 0.3s;
+    margin: 0;
 }
 
 #carouselHome .carousel-indicators .active {

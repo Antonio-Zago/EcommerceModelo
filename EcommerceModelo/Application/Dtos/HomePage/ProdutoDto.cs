@@ -16,6 +16,6 @@ namespace Application.Dtos.HomePage
 
         public string Tamanho { get; set; }
 
-        public string FotoPrincipalBase64 { get; set; }
+        public string ImagemPrincipalUrl { get; set; }
     }
 }

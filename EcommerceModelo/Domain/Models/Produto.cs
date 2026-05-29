@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Domain.Models;
+
 public class Produto
 {
     [Column("id")]
@@ -18,7 +20,9 @@ public class Produto
     public int QtdEstoque { get; set; }
 
     [Column("tamanho")]
-    public string Tamanho { get; set; }
+    public string Tamanho { get; set; } = string.Empty;
 
     public ICollection<CategoriaProduto> CategoriasProdutos { get; set; } = new List<CategoriaProduto>();
+
+    public ICollection<ProdutoImagem> Imagens { get; set; } = new List<ProdutoImagem>();
 }

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace Application.Dtos.HomePage;
 
-namespace Application.Dtos.HomePage
+public class HomeDto
 {
-    public class HomeDto
-    {
-        public List<CategoriaDto> Categorias { get; set; }
-
-        public List<ProdutoDto> Produtos { get; set; }
-    }
+    public List<CategoriaDto> Categorias { get; set; } = new();
+    public List<ProdutoDto> MaisVendidos { get; set; } = new();
+    public List<ProdutoDto> Novidades { get; set; } = new();
+    public List<ProdutoDto> Recomendados { get; set; } = new();
 }
