@@ -1,0 +1,19 @@
+/* ── Ver mais ── */
+.btn-ver-mais {
+    background: transparent;
+    border: 1.5px solid #1a1a1a;
+    padding: 12px 44px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-ver-mais:hover {
+    background: #1a1a1a;
+    color: #fff;
+}

@@ -1,0 +1,34 @@
+/* ── Results Bar ── */
+.results-label {
+    font-size: 0.78rem;
+    color: #888;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    font-family: 'Inter', sans-serif;
+}
+
+.sort-select {
+    border: none;
+    border-bottom: 1.5px solid #bbb;
+    border-radius: 0;
+    background: transparent;
+    font-size: 0.82rem;
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+    padding: 2px 20px 2px 4px;
+    cursor: pointer;
+    outline: none;
+}
+
+.sort-select:focus {
+    border-bottom-color: #1a1a1a;
+    outline: none;
+    box-shadow: none;
+}
+
+.result-count {
+    font-size: 0.78rem;
+    color: #aaa;
+    letter-spacing: 0.02em;
+    font-family: 'Inter', sans-serif;
+}

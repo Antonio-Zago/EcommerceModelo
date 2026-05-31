@@ -1,0 +1,31 @@
+/* ── Breadcrumb ── */
+.page-breadcrumb .breadcrumb {
+    background: none;
+    padding: 0;
+    margin: 0;
+}
+
+.page-breadcrumb .breadcrumb-item {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: #999;
+}
+
+.page-breadcrumb .breadcrumb-item a {
+    color: #999;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.page-breadcrumb .breadcrumb-item a:hover {
+    color: #1a1a1a;
+}
+
+.page-breadcrumb .breadcrumb-item.active {
+    color: #1a1a1a;
+}
+
+.page-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: #ccc;
+}

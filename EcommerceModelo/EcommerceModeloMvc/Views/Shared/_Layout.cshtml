@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EcommerceModeloMvc.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/carrousel.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
@@ -33,6 +34,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link-custom" asp-area="" asp-controller="Roupas" asp-action="ListarRoupasInfantis">Infantil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-custom" asp-area="" asp-controller="Produtos" asp-action="Cadastrar">Cadastrar Produto</a>
                         </li>
                     </ul>
 

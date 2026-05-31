@@ -1,0 +1,139 @@
+/* ── Filter Bar ── */
+.filter-bar {
+    padding-bottom: 1rem;
+}
+
+.filter-btn {
+    background: #fff;
+    border: 1.5px solid #ddd;
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+}
+
+.filter-btn:hover,
+.filter-btn[aria-expanded="true"] {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #fff;
+}
+
+.filter-dropdown {
+    border: 1.5px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.filter-check {
+    padding: 5px 8px;
+}
+
+.filter-check .form-check-input:checked {
+    background-color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+.filter-check .form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+}
+
+.filter-check .form-check-label {
+    font-size: 0.83rem;
+    color: #333;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+}
+
+.filter-range-label {
+    font-size: 0.8rem;
+    color: #555;
+    display: block;
+    font-family: 'Inter', sans-serif;
+}
+
+.filter-range::-webkit-slider-thumb {
+    background: #1a1a1a;
+}
+
+.filter-range::-moz-range-thumb {
+    background: #1a1a1a;
+    border: none;
+}
+
+/* ── Size Grid (filtro de tamanho) ── */
+.size-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 4px 8px 8px;
+}
+
+.size-btn {
+    background: #fff;
+    border: 1.5px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 4px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+}
+
+.size-btn:hover,
+.size-btn.active {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #fff;
+}
+
+/* ── Active Filters ── */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 28px;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 4px 10px 4px 12px;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+}
+
+.filter-tag-remove {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.filter-tag-remove:hover {
+    color: #fff;
+}

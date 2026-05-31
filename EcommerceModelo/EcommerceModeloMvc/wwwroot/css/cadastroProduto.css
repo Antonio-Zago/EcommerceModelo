@@ -1,0 +1,139 @@
+.upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: #fafafa;
+}
+
+.upload-area:hover {
+    border-color: #888;
+    background: #f3f3f3;
+}
+
+.upload-area svg {
+    opacity: 0.4;
+}
+
+.preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.preview-card {
+    position: relative;
+    width: 160px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    transition: border-color 0.2s;
+    flex-shrink: 0;
+}
+
+.preview-card.principal {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.18);
+}
+
+.preview-card .img-wrapper {
+    width: 100%;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.preview-card .img-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.15s;
+    transform-origin: center center;
+}
+
+.preview-card .card-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 6px;
+    background: rgba(255,255,255,0.95);
+}
+
+.preview-card .btn-action {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: background 0.15s;
+}
+
+.preview-card .btn-action:hover {
+    background: #f0f0f0;
+}
+
+.preview-card .btn-principal {
+    color: #aaa;
+}
+
+.preview-card.principal .btn-principal {
+    color: #0d6efd;
+}
+
+.preview-card .btn-remover {
+    color: #dc3545;
+}
+
+.preview-card .scale-control {
+    padding: 4px 8px 6px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.preview-card .scale-control label {
+    font-size: 0.7rem;
+    color: #888;
+    margin-bottom: 2px;
+    display: block;
+}
+
+.preview-card .scale-control input[type=range] {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+}
+
+.badge-principal {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+}
+
+.form-section-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+}

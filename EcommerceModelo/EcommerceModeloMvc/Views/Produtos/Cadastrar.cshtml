@@ -1,0 +1,155 @@
+@model EcommerceModeloMvc.ViewModels.CadastroProdutoViewModel
+@using Domain.Models
+
+@{
+    ViewData["Title"] = "Cadastrar Produto";
+    var categorias = ViewBag.Categorias as IEnumerable<Categoria> ?? Enumerable.Empty<Categoria>();
+    var tamanhos = new[] { "PP", "P", "M", "G", "GG", "Único" };
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new("Cadastrar produto")
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cadastroProduto.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<div class="row justify-content-center">
+
+
+<h1 class="mb-4">Cadastrar produto</h1>
+<div class="col-12 col-xl-9 col-xxl-8">
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Sucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewData.ModelState[string.Empty]!.Errors.FirstOrDefault()?.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<form id="formCadastroProduto" asp-action="Cadastrar" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    @* ── Dados do Produto ── *@
+    <div class="form-section-card">
+        <div class="form-section-title">Dados do Produto</div>
+        <div class="row g-3">
+
+            <div class="col-12 col-md-8">
+                <label asp-for="Nome" class="form-label">Nome <span class="text-danger">*</span></label>
+                <input asp-for="Nome" class="form-control" placeholder="Ex.: Camiseta Básica Algodão" maxlength="200" />
+                <span asp-validation-for="Nome" class="text-danger small"></span>
+            </div>
+
+            <div class="col-6 col-md-2">
+                <label asp-for="Preco" class="form-label">Preço (R$) <span class="text-danger">*</span></label>
+                <input asp-for="Preco" class="form-control" type="number" step="0.01" min="0.01" placeholder="0,00" />
+                <span asp-validation-for="Preco" class="text-danger small"></span>
+            </div>
+
+            <div class="col-6 col-md-2">
+                <label asp-for="QtdEstoque" class="form-label">Estoque <span class="text-danger">*</span></label>
+                <input asp-for="QtdEstoque" class="form-control" type="number" min="0" placeholder="0" />
+                <span asp-validation-for="QtdEstoque" class="text-danger small"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Descricao" class="form-label">Descrição <span class="text-danger">*</span></label>
+                <textarea asp-for="Descricao" class="form-control" rows="3" placeholder="Descreva o produto..."></textarea>
+                <span asp-validation-for="Descricao" class="text-danger small"></span>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <label asp-for="Tamanho" class="form-label">Tamanho <span class="text-danger">*</span></label>
+                <select asp-for="Tamanho" class="form-select">
+                    <option value="">Selecione...</option>
+                    @foreach (var t in tamanhos)
+                    {
+                        <option value="@t">@t</option>
+                    }
+                </select>
+                <span asp-validation-for="Tamanho" class="text-danger small"></span>
+            </div>
+
+            @if (categorias.Any())
+            {
+                <div class="col-12">
+                    <label class="form-label">Categorias</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach (var cat in categorias)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       name="CategoriaIds" value="@cat.Id"
+                                       id="cat_@cat.Id"
+                                       @(Model.CategoriaIds.Contains(cat.Id) ? "checked" : "") />
+                                <label class="form-check-label" for="cat_@cat.Id">@cat.Nome</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @* ── Imagens do Produto ── *@
+    <div class="form-section-card">
+        <div class="form-section-title">Imagens do Produto</div>
+
+        <input type="file" id="inputImagens" name="Imagens" multiple accept="image/*" style="display:none" />
+        <input type="hidden" id="imagemPrincipalIndex" name="ImagemPrincipalIndex" value="0" />
+
+        <div class="upload-area mb-3" id="uploadArea">
+            <button type="button" id="btnAdicionarImagem" class="btn btn-outline-secondary">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="me-1">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Adicionar Imagem
+            </button>
+            <p class="text-muted small mt-2 mb-0">JPG, PNG ou WebP · máx. 5 MB por arquivo</p>
+        </div>
+
+        <span id="erroImagens" class="text-danger small" style="display:none;"></span>
+        @if (ViewData.ModelState["Imagens"]?.Errors.Count > 0)
+        {
+            <div class="text-danger small">
+                @foreach (var err in ViewData.ModelState["Imagens"]!.Errors)
+                {
+                    <div>@err.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        <div id="previewGrid" class="preview-grid"></div>
+    </div>
+
+    @* ── Ações ── *@
+    <div class="d-flex justify-content-between mt-2 mb-5">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary px-4">Cancelar</a>
+        <button type="submit" class="btn btn-primary px-5">Cadastrar Produto</button>
+    </div>
+</form>
+
+</div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/cadastroProduto.js" asp-append-version="true"></script>
+}
