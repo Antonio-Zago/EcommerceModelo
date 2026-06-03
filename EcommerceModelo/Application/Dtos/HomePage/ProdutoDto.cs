@@ -12,10 +12,6 @@ namespace Application.Dtos.HomePage
         public decimal Preco { get; set; }
         public string Descricao { get; set; } = string.Empty;
 
-        public int QtdEstoque { get; set; }
-
-        public string Tamanho { get; set; }
-
         public string ImagemPrincipalUrl { get; set; }
     }
 }

@@ -6,6 +6,8 @@ public interface IProdutoService : IBaseService<Produto>
 {
     Task<IEnumerable<Produto>> ObterTodosComImagensAsync();
 
-    /// <param name="imagens">Lista de (stream do arquivo, nome original) para salvar.</param>
-    Task<int> CadastrarComImagensAsync(Produto produto, List<(Stream stream, string nomeOriginal)> imagens, int imagemPrincipalIndex, string pastaFisica);
+    /// <summary>
+    /// Cadastra um Produto com suas imagens e registra os estoques por tamanho na tabela produto_estoque.
+    /// </summary>
+    Task CadastrarComEstoqueAsync(Produto produto, List<(string tamanho, int quantidade)> estoques, List<(Stream stream, string nomeOriginal)> imagens, int imagemPrincipalIndex, string pastaFisica);
 }

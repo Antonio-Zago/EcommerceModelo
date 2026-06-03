@@ -8,20 +8,32 @@ public class ProdutoService : BaseService<Produto>, IProdutoService
 {
     private readonly IProdutoRepository _produtoRepository;
     private readonly IProdutoImagemRepository _produtoImagemRepository;
+    private readonly IProdutoEstoqueRepository _produtoEstoqueRepository;
 
-    public ProdutoService(IProdutoRepository repository, IProdutoImagemRepository produtoImagemRepository) : base(repository)
+    public ProdutoService(
+        IProdutoRepository repository,
+        IProdutoImagemRepository produtoImagemRepository,
+        IProdutoEstoqueRepository produtoEstoqueRepository) : base(repository)
     {
         _produtoRepository = repository;
         _produtoImagemRepository = produtoImagemRepository;
+        _produtoEstoqueRepository = produtoEstoqueRepository;
     }
 
     public Task<IEnumerable<Produto>> ObterTodosComImagensAsync()
         => _produtoRepository.ObterTodosComImagensAsync();
 
-    public async Task<int> CadastrarComImagensAsync(Produto produto, List<(Stream stream, string nomeOriginal)> imagens, int imagemPrincipalIndex, string pastaFisica)
+    public async Task CadastrarComEstoqueAsync(
+        Produto produto,
+        List<(string tamanho, int quantidade)> estoques,
+        List<(Stream stream, string nomeOriginal)> imagens,
+        int imagemPrincipalIndex,
+        string pastaFisica)
     {
+        // 1. Persiste o produto
         await _produtoRepository.AdicionarAsync(produto);
 
+        // 2. Salva os arquivos de imagem e vincula ao produto
         if (!Directory.Exists(pastaFisica))
             Directory.CreateDirectory(pastaFisica);
 
@@ -35,16 +47,23 @@ public class ProdutoService : BaseService<Produto>, IProdutoService
             using var fs = new FileStream(caminhoFisico, FileMode.Create);
             await stream.CopyToAsync(fs);
 
-            var imagem = new ProdutoImagem
+            await _produtoImagemRepository.AdicionarAsync(new ProdutoImagem
             {
                 ProdutoId = produto.Id,
                 ImagemUrl = $"/images/produtos/{nomeArquivo}",
                 Principal = i == imagemPrincipalIndex
-            };
-
-            await _produtoImagemRepository.AdicionarAsync(imagem);
+            });
         }
 
-        return produto.Id;
+        // 3. Registra um ProdutoEstoque por tamanho
+        foreach (var (tamanho, quantidade) in estoques)
+        {
+            await _produtoEstoqueRepository.AdicionarAsync(new ProdutoEstoque
+            {
+                ProdutoId = produto.Id,
+                Tamanho = tamanho,
+                Quantidade = quantidade
+            });
+        }
     }
 }

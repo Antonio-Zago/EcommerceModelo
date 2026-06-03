@@ -15,12 +15,7 @@ public class CadastroProdutoViewModel
     [Required(ErrorMessage = "A descrição é obrigatória.")]
     public string Descricao { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "A quantidade em estoque é obrigatória.")]
-    [Range(0, int.MaxValue, ErrorMessage = "O estoque não pode ser negativo.")]
-    public int QtdEstoque { get; set; }
-
-    [Required(ErrorMessage = "O tamanho é obrigatório.")]
-    public string Tamanho { get; set; } = string.Empty;
+    public List<TamanhoEstoqueViewModel> Tamanhos { get; set; } = new();
 
     public List<int> CategoriaIds { get; set; } = new();
 

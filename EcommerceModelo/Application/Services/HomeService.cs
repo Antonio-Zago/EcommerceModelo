@@ -36,8 +36,6 @@ public class HomeService : IHomeService
                 Nome = p.Nome,
                 Preco = p.Preco,
                 Descricao = p.Descricao,
-                QtdEstoque = p.QtdEstoque,
-                Tamanho = p.Tamanho,
                 ImagemPrincipalUrl = imagemPrincipal
             };
 

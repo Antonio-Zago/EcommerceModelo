@@ -61,28 +61,37 @@
                 <span asp-validation-for="Preco" class="text-danger small"></span>
             </div>
 
-            <div class="col-6 col-md-2">
-                <label asp-for="QtdEstoque" class="form-label">Estoque <span class="text-danger">*</span></label>
-                <input asp-for="QtdEstoque" class="form-control" type="number" min="0" placeholder="0" />
-                <span asp-validation-for="QtdEstoque" class="text-danger small"></span>
-            </div>
-
             <div class="col-12">
                 <label asp-for="Descricao" class="form-label">Descrição <span class="text-danger">*</span></label>
                 <textarea asp-for="Descricao" class="form-control" rows="3" placeholder="Descreva o produto..."></textarea>
                 <span asp-validation-for="Descricao" class="text-danger small"></span>
             </div>
 
-            <div class="col-6 col-md-3">
-                <label asp-for="Tamanho" class="form-label">Tamanho <span class="text-danger">*</span></label>
-                <select asp-for="Tamanho" class="form-select">
-                    <option value="">Selecione...</option>
-                    @foreach (var t in tamanhos)
-                    {
-                        <option value="@t">@t</option>
-                    }
-                </select>
-                <span asp-validation-for="Tamanho" class="text-danger small"></span>
+            <div class="col-12">
+                <label class="form-label">Tamanhos e Estoque <span class="text-danger">*</span></label>
+                <div id="tamanhoEstoqueRows">
+                    <div class="tamanho-row d-flex align-items-center gap-2 mb-2">
+                        <select name="Tamanhos[0].Tamanho" class="form-select form-select-sm" style="max-width:120px;" required>
+                            <option value="">Tamanho</option>
+                            @foreach (var t in tamanhos) { <option value="@t">@t</option> }
+                        </select>
+                        <input name="Tamanhos[0].QtdEstoque" type="number" min="0" placeholder="Qtd." class="form-control form-control-sm" style="max-width:100px;" required />
+                        <button type="button" class="btn btn-outline-danger btn-sm btn-remover-tamanho" title="Remover" disabled>
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" id="btnAdicionarTamanho" class="btn btn-outline-secondary btn-sm mt-1">
+                    + Adicionar tamanho
+                </button>
+                <span id="erroTamanhos" class="text-danger small d-block mt-1" style="display:none !important;"></span>
+                @if (ViewData.ModelState["Tamanhos"]?.Errors.Count > 0)
+                {
+                    <div class="text-danger small mt-1">
+                        @foreach (var err in ViewData.ModelState["Tamanhos"]!.Errors)
+                        { <div>@err.ErrorMessage</div> }
+                    </div>
+                }
             </div>
 
             @if (categorias.Any())
@@ -151,5 +160,8 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        window.TAMANHOS_DISPONIVEIS = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(tamanhos));
+    </script>
     <script src="~/js/cadastroProduto.js" asp-append-version="true"></script>
 }

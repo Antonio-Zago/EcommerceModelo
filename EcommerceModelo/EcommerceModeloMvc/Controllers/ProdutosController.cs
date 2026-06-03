@@ -31,6 +31,11 @@ public class ProdutosController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Cadastrar(CadastroProdutoViewModel viewModel)
     {
+        if (viewModel.Tamanhos == null || viewModel.Tamanhos.Count == 0)
+            ModelState.AddModelError("Tamanhos", "Adicione ao menos um tamanho com quantidade.");
+        else if (viewModel.Tamanhos.GroupBy(t => t.Tamanho).Any(g => g.Count() > 1))
+            ModelState.AddModelError("Tamanhos", "Não é permitido cadastrar o mesmo tamanho mais de uma vez.");
+
         if (viewModel.Imagens == null || viewModel.Imagens.Count == 0)
             ModelState.AddModelError("Imagens", "Adicione ao menos uma imagem do produto.");
 
@@ -59,22 +64,25 @@ public class ProdutosController : Controller
                 Nome = viewModel.Nome,
                 Preco = viewModel.Preco,
                 Descricao = viewModel.Descricao,
-                QtdEstoque = viewModel.QtdEstoque,
-                Tamanho = viewModel.Tamanho,
                 CategoriasProdutos = viewModel.CategoriaIds
                     .Select(id => new CategoriaProduto { CategoriaId = id })
                     .ToList()
             };
 
-            var pastaFisica = Path.Combine(_env.WebRootPath, "images", "produtos");
+            var estoques = viewModel.Tamanhos!
+                .Select(t => (t.Tamanho, t.QtdEstoque))
+                .ToList();
 
             var imagens = viewModel.Imagens!
                 .Select(f => (f.OpenReadStream(), f.FileName))
                 .ToList();
 
-            await _produtoService.CadastrarComImagensAsync(produto, imagens, viewModel.ImagemPrincipalIndex, pastaFisica);
+            var pastaFisica = Path.Combine(_env.WebRootPath, "images", "produtos");
 
-            TempData["Sucesso"] = $"Produto \"{produto.Nome}\" cadastrado com sucesso!";
+            await _produtoService.CadastrarComEstoqueAsync(produto, estoques, imagens, viewModel.ImagemPrincipalIndex, pastaFisica);
+
+            var tamanhosCadastrados = string.Join(", ", viewModel.Tamanhos?.Select(t => t.Tamanho) ?? []);
+            TempData["Sucesso"] = $"Produto \"{viewModel.Nome}\" cadastrado com estoque nos tamanhos: {tamanhosCadastrados}.";
             return RedirectToAction(nameof(Cadastrar));
         }
         catch (Exception ex)

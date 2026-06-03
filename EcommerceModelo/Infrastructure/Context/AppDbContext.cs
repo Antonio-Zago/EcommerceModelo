@@ -13,6 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<CompraItem> CompraItens { get; set; }
     public DbSet<Produto> Produtos { get; set; }
     public DbSet<ProdutoImagem> ProdutoImagens { get; set; }
+    public DbSet<ProdutoEstoque> ProdutoEstoques { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -20,6 +21,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Produto>().ToTable("produtos");
         modelBuilder.Entity<CategoriaProduto>().ToTable("categorias_produtos");
         modelBuilder.Entity<ProdutoImagem>().ToTable("produto_imagens");
+        modelBuilder.Entity<ProdutoEstoque>().ToTable("produto_estoque");
         modelBuilder.Entity<Compra>().ToTable("compras");
         modelBuilder.Entity<CompraItem>().ToTable("compra_itens");
 

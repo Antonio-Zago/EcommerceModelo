@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<ICompraRepository, CompraRepository>();
         services.AddScoped<ICompraItemRepository, CompraItemRepository>();
         services.AddScoped<IProdutoImagemRepository, ProdutoImagemRepository>();
+        services.AddScoped<IProdutoEstoqueRepository, ProdutoEstoqueRepository>();
 
         // Services
         services.AddScoped<IHomeService, HomeService>();
@@ -31,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<ICompraService, CompraService>();
         services.AddScoped<ICompraItemService, CompraItemService>();
         services.AddScoped<IProdutoImagemService, ProdutoImagemService>();
+        services.AddScoped<IProdutoEstoqueService, ProdutoEstoqueService>();
 
         return services;
     }
