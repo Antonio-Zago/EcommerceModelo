@@ -9,21 +9,27 @@ public class ProdutosController : Controller
 {
     private readonly IProdutoService _produtoService;
     private readonly ICategoriaService _categoriaService;
+    private readonly IOpcaoTamanhoService _opcaoTamanhoService;
     private readonly IWebHostEnvironment _env;
 
     private static readonly string[] _extensoesPermitidas = [".jpg", ".jpeg", ".png", ".webp"];
     private const long _tamanhoMaximoPorArquivo = 5 * 1024 * 1024; // 5 MB
 
-    public ProdutosController(IProdutoService produtoService, ICategoriaService categoriaService, IWebHostEnvironment env)
+    public ProdutosController(
+        IProdutoService produtoService,
+        ICategoriaService categoriaService,
+        IOpcaoTamanhoService opcaoTamanhoService,
+        IWebHostEnvironment env)
     {
         _produtoService = produtoService;
         _categoriaService = categoriaService;
+        _opcaoTamanhoService = opcaoTamanhoService;
         _env = env;
     }
 
     public async Task<IActionResult> Cadastrar()
     {
-        ViewBag.Categorias = await _categoriaService.ObterTodosAsync();
+        await PopularViewBagAsync();
         return View(new CadastroProdutoViewModel());
     }
 
@@ -33,7 +39,7 @@ public class ProdutosController : Controller
     {
         if (viewModel.Tamanhos == null || viewModel.Tamanhos.Count == 0)
             ModelState.AddModelError("Tamanhos", "Adicione ao menos um tamanho com quantidade.");
-        else if (viewModel.Tamanhos.GroupBy(t => t.Tamanho).Any(g => g.Count() > 1))
+        else if (viewModel.Tamanhos.GroupBy(t => t.TamanhoId).Any(g => g.Count() > 1))
             ModelState.AddModelError("Tamanhos", "Não é permitido cadastrar o mesmo tamanho mais de uma vez.");
 
         if (viewModel.Imagens == null || viewModel.Imagens.Count == 0)
@@ -53,7 +59,7 @@ public class ProdutosController : Controller
 
         if (!ModelState.IsValid)
         {
-            ViewBag.Categorias = await _categoriaService.ObterTodosAsync();
+            await PopularViewBagAsync();
             return View(viewModel);
         }
 
@@ -64,13 +70,11 @@ public class ProdutosController : Controller
                 Nome = viewModel.Nome,
                 Preco = viewModel.Preco,
                 Descricao = viewModel.Descricao,
-                CategoriasProdutos = viewModel.CategoriaIds
-                    .Select(id => new CategoriaProduto { CategoriaId = id })
-                    .ToList()
+                CategoriaId = viewModel.CategoriaId
             };
 
             var estoques = viewModel.Tamanhos!
-                .Select(t => (t.Tamanho, t.QtdEstoque))
+                .Select(t => (t.TamanhoId, t.QtdEstoque))
                 .ToList();
 
             var imagens = viewModel.Imagens!
@@ -81,15 +85,20 @@ public class ProdutosController : Controller
 
             await _produtoService.CadastrarComEstoqueAsync(produto, estoques, imagens, viewModel.ImagemPrincipalIndex, pastaFisica);
 
-            var tamanhosCadastrados = string.Join(", ", viewModel.Tamanhos?.Select(t => t.Tamanho) ?? []);
-            TempData["Sucesso"] = $"Produto \"{viewModel.Nome}\" cadastrado com estoque nos tamanhos: {tamanhosCadastrados}.";
+            TempData["Sucesso"] = $"Produto \"{viewModel.Nome}\" cadastrado com sucesso.";
             return RedirectToAction(nameof(Cadastrar));
         }
         catch (Exception ex)
         {
             ModelState.AddModelError(string.Empty, $"Erro ao cadastrar produto: {ex.Message}");
-            ViewBag.Categorias = await _categoriaService.ObterTodosAsync();
+            await PopularViewBagAsync();
             return View(viewModel);
         }
+    }
+
+    private async Task PopularViewBagAsync()
+    {
+        ViewBag.Categorias = await _categoriaService.ObterTodosAsync();
+        ViewBag.OpcoesTamanho = await _opcaoTamanhoService.ObterTodosComTipoAsync();
     }
 }

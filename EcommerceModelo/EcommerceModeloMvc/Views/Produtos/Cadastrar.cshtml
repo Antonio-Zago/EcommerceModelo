@@ -4,7 +4,8 @@
 @{
     ViewData["Title"] = "Cadastrar Produto";
     var categorias = ViewBag.Categorias as IEnumerable<Categoria> ?? Enumerable.Empty<Categoria>();
-    var tamanhos = new[] { "PP", "P", "M", "G", "GG", "Único" };
+    var opcoesTamanho = ViewBag.OpcoesTamanho as IEnumerable<OpcaoTamanho> ?? Enumerable.Empty<OpcaoTamanho>();
+    var tamanhosPorTipo = opcoesTamanho.GroupBy(o => o.Tipo?.Nome ?? "Geral").ToList();
 
     var breadcrumb = new List<BreadcrumbItem>
     {
@@ -20,7 +21,6 @@
 @await Html.PartialAsync("_Breadcrumb", breadcrumb)
 
 <div class="row justify-content-center">
-
 
 <h1 class="mb-4">Cadastrar produto</h1>
 <div class="col-12 col-xl-9 col-xxl-8">
@@ -67,17 +67,45 @@
                 <span asp-validation-for="Descricao" class="text-danger small"></span>
             </div>
 
+            @* ── Categoria (FK única) ── *@
+            @if (categorias.Any())
+            {
+                <div class="col-12 col-md-5">
+                    <label asp-for="CategoriaId" class="form-label">Categoria <span class="text-danger">*</span></label>
+                    <select asp-for="CategoriaId" class="form-select">
+                        <option value="">— Selecione —</option>
+                        @foreach (var cat in categorias)
+                        {
+                            <option value="@cat.Id" selected="@(Model.CategoriaId == cat.Id)">@cat.Nome</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CategoriaId" class="text-danger small"></span>
+                </div>
+            }
+
+            @* ── Tamanhos e Estoque ── *@
             <div class="col-12">
                 <label class="form-label">Tamanhos e Estoque <span class="text-danger">*</span></label>
+                
                 <div id="tamanhoEstoqueRows">
+                    <select class="form-select form-select-sm sel-tipo mb-1" style="max-width:150px;">
+                            <option value="">Tipo</option>
+                            @foreach (var grupo in tamanhosPorTipo)
+                            {
+                                <option value="@grupo.Key">@grupo.Key</option>
+                            }
+                    </select>
                     <div class="tamanho-row d-flex align-items-center gap-2 mb-2">
-                        <select name="Tamanhos[0].Tamanho" class="form-select form-select-sm" style="max-width:120px;" required>
-                            <option value="">Tamanho</option>
-                            @foreach (var t in tamanhos) { <option value="@t">@t</option> }
+                        
+                        <select name="Tamanhos[0].TamanhoId" class="form-select form-select-sm sel-opcao" style="max-width:150px;" required disabled>
+                            <option value="">Opção</option>
                         </select>
-                        <input name="Tamanhos[0].QtdEstoque" type="number" min="0" placeholder="Qtd." class="form-control form-control-sm" style="max-width:100px;" required />
+                        <input name="Tamanhos[0].QtdEstoque" type="number" min="0" placeholder="Qtd."
+                               class="form-control form-control-sm" style="max-width:100px;" required />
                         <button type="button" class="btn btn-outline-danger btn-sm btn-remover-tamanho" title="Remover" disabled>
-                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -94,24 +122,6 @@
                 }
             </div>
 
-            @if (categorias.Any())
-            {
-                <div class="col-12">
-                    <label class="form-label">Categorias</label>
-                    <div class="d-flex flex-wrap gap-3">
-                        @foreach (var cat in categorias)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox"
-                                       name="CategoriaIds" value="@cat.Id"
-                                       id="cat_@cat.Id"
-                                       @(Model.CategoriaIds.Contains(cat.Id) ? "checked" : "") />
-                                <label class="form-check-label" for="cat_@cat.Id">@cat.Nome</label>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
         </div>
     </div>
 
@@ -161,7 +171,13 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        window.TAMANHOS_DISPONIVEIS = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(tamanhos));
+        // Serializa as opções de tamanho para uso dinâmico no JS (adicionar linha)
+        window.OPCOES_TAMANHO = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            tamanhosPorTipo.Select(g => new {
+                tipo = g.Key,
+                opcoes = g.Select(o => new { id = o.Id, descricao = o.Descricao })
+            })
+        ));
     </script>
     <script src="~/js/cadastroProduto.js" asp-append-version="true"></script>
 }

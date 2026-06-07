@@ -11,7 +11,8 @@ public class ProdutoEstoque
     public int Quantidade { get; set; }
 
     [Column("tamanho")]
-    public string Tamanho { get; set; } = string.Empty;
+    public int? TamanhoId { get; set; }
+    public OpcaoTamanho? Tamanho { get; set; }
 
     [Column("produto")]
     public int ProdutoId { get; set; }

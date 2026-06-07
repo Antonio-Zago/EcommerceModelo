@@ -13,5 +13,5 @@ public class Categoria
     [Column("imagemurl")]
     public string ImagemUrl { get; set; } = string.Empty;
 
-    public ICollection<CategoriaProduto> CategoriasProdutos { get; set; } = new List<CategoriaProduto>();
+    public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
 }

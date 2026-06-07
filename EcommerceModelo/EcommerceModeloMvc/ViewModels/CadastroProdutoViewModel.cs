@@ -17,7 +17,8 @@ public class CadastroProdutoViewModel
 
     public List<TamanhoEstoqueViewModel> Tamanhos { get; set; } = new();
 
-    public List<int> CategoriaIds { get; set; } = new();
+    [Required(ErrorMessage = "A categoria é obrigatória")]
+    public int CategoriaId { get; set; }
 
     public List<IFormFile> Imagens { get; set; } = new();
 

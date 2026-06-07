@@ -24,6 +24,8 @@ public static class DependencyInjection
         services.AddScoped<ICompraItemRepository, CompraItemRepository>();
         services.AddScoped<IProdutoImagemRepository, ProdutoImagemRepository>();
         services.AddScoped<IProdutoEstoqueRepository, ProdutoEstoqueRepository>();
+        services.AddScoped<IOpcaoTamanhoRepository, OpcaoTamanhoRepository>();
+        services.AddScoped<ITipoTamanhoRepository, TipoTamanhoRepository>();
 
         // Services
         services.AddScoped<IHomeService, HomeService>();
@@ -33,6 +35,8 @@ public static class DependencyInjection
         services.AddScoped<ICompraItemService, CompraItemService>();
         services.AddScoped<IProdutoImagemService, ProdutoImagemService>();
         services.AddScoped<IProdutoEstoqueService, ProdutoEstoqueService>();
+        services.AddScoped<IOpcaoTamanhoService, OpcaoTamanhoService>();
+        services.AddScoped<ITipoTamanhoService, TipoTamanhoService>();
 
         return services;
     }

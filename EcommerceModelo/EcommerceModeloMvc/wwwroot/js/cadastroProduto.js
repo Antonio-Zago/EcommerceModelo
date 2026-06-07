@@ -93,12 +93,32 @@
     /* ═══════════════════════════════════════
        TAMANHOS DINÂMICOS
     ═══════════════════════════════════════ */
-    const tamanhos         = window.TAMANHOS_DISPONIVEIS || [];
-    const rowsContainer    = document.getElementById('tamanhoEstoqueRows');
-    const btnAdicionarTam  = document.getElementById('btnAdicionarTamanho');
-    const erroTamanhos     = document.getElementById('erroTamanhos');
+    // window.OPCOES_TAMANHO = [{ tipo: "Roupa", opcoes: [{id, descricao}] }, ...]
+    const opcoesPorTipo   = window.OPCOES_TAMANHO || [];
+    const rowsContainer   = document.getElementById('tamanhoEstoqueRows');
+    const btnAdicionarTam = document.getElementById('btnAdicionarTamanho');
+    const erroTamanhos    = document.getElementById('erroTamanhos');
+
+    // Select de tipo único, fora das linhas
+    const selTipoGlobal = rowsContainer.querySelector('.sel-tipo');
 
     btnAdicionarTam.addEventListener('click', adicionarLinha);
+
+    // Ao mudar o tipo: repopula todos os sel-opcao existentes e limpa seleção
+    selTipoGlobal.addEventListener('change', () => {
+        rowsContainer.querySelectorAll('.tamanho-row').forEach(row => {
+            popularOpcoes(row.querySelector('.sel-opcao'));
+        });
+    });
+
+    // Vincula remoção na primeira linha (já renderizada no HTML)
+    rowsContainer.querySelectorAll('.btn-remover-tamanho').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.closest('.tamanho-row').remove();
+            reindexarLinhas();
+            atualizarBotoesRemover();
+        });
+    });
 
     function adicionarLinha() {
         const idx = rowsContainer.querySelectorAll('.tamanho-row').length;
@@ -106,9 +126,9 @@
         const row = document.createElement('div');
         row.className = 'tamanho-row d-flex align-items-center gap-2 mb-2';
         row.innerHTML = `
-            <select name="Tamanhos[${idx}].Tamanho" class="form-select form-select-sm" style="max-width:120px;" required>
-                <option value="">Tamanho</option>
-                ${tamanhos.map(t => `<option value="${t}">${t}</option>`).join('')}
+            <select name="Tamanhos[${idx}].TamanhoId" class="form-select form-select-sm sel-opcao"
+                    style="max-width:150px;" required ${selTipoGlobal.value ? '' : 'disabled'}>
+                <option value="">Opção</option>
             </select>
             <input name="Tamanhos[${idx}].QtdEstoque" type="number" min="0" placeholder="Qtd."
                    class="form-control form-control-sm" style="max-width:100px;" required />
@@ -117,6 +137,11 @@
                     <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
                 </svg>
             </button>`;
+
+        // Se já há um tipo selecionado, popula as opções imediatamente
+        if (selTipoGlobal.value) {
+            popularOpcoes(row.querySelector('.sel-opcao'));
+        }
 
         row.querySelector('.btn-remover-tamanho').addEventListener('click', () => {
             row.remove();
@@ -129,11 +154,29 @@
         if (erroTamanhos) erroTamanhos.style.display = 'none';
     }
 
-    // Atualiza os índices dos campos após remoção de uma linha
+    // Popula um sel-opcao com base no tipo global atualmente selecionado
+    function popularOpcoes(selOpcao) {
+        const grupo = opcoesPorTipo.find(g => g.tipo === selTipoGlobal.value);
+        selOpcao.innerHTML = '<option value="">Opção</option>';
+
+        if (grupo && grupo.opcoes.length > 0) {
+            grupo.opcoes.forEach(op => {
+                const opt = document.createElement('option');
+                opt.value       = op.id;
+                opt.textContent = op.descricao;
+                selOpcao.appendChild(opt);
+            });
+            selOpcao.disabled = false;
+        } else {
+            selOpcao.disabled = true;
+        }
+    }
+
+    // Atualiza os índices name após remoção de uma linha
     function reindexarLinhas() {
         rowsContainer.querySelectorAll('.tamanho-row').forEach((row, i) => {
-            row.querySelector('select').name = `Tamanhos[${i}].Tamanho`;
-            row.querySelector('input').name  = `Tamanhos[${i}].QtdEstoque`;
+            row.querySelector('.sel-opcao').name         = `Tamanhos[${i}].TamanhoId`;
+            row.querySelector('input[type=number]').name = `Tamanhos[${i}].QtdEstoque`;
         });
     }
 
@@ -145,18 +188,9 @@
         });
     }
 
-    // Vincula remoção à primeira linha já existente no HTML
-    rowsContainer.querySelectorAll('.btn-remover-tamanho').forEach(btn => {
-        btn.addEventListener('click', () => {
-            btn.closest('.tamanho-row').remove();
-            reindexarLinhas();
-            atualizarBotoesRemover();
-        });
-    });
-
     /* ═══════════════════════════════════════
-       SUBMIT
-    ═══════════════════════════════════════ */
+      SUBMIT
+   ═══════════════════════════════════════ */
     form.addEventListener('submit', function (e) {
         let valido = true;
 
@@ -174,11 +208,11 @@
             valido = false;
             if (erroTamanhos) {
                 erroTamanhos.textContent = duplicados.length > 0
-                    ? `Tamanho duplicado: ${[...new Set(duplicados)].join(', ')}.`
+                    ? `Tamanho duplicado.`
                     : 'Adicione ao menos um tamanho com quantidade.';
                 erroTamanhos.style.display = 'block';
             }
-        }
+        } 
 
         // Validar imagens
         if (arquivos.length === 0) {
@@ -197,4 +231,5 @@
             inputFile.style.display = 'block';
         }
     });
+
 })();

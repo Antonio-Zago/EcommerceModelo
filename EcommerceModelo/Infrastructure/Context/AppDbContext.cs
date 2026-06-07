@@ -8,27 +8,41 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Categoria> Categorias { get; set; }
-    public DbSet<CategoriaProduto> CategoriasProdutos { get; set; }
     public DbSet<Compra> Compras { get; set; }
     public DbSet<CompraItem> CompraItens { get; set; }
     public DbSet<Produto> Produtos { get; set; }
     public DbSet<ProdutoImagem> ProdutoImagens { get; set; }
     public DbSet<ProdutoEstoque> ProdutoEstoques { get; set; }
+    public DbSet<TipoTamanho> TipoTamanhos { get; set; }
+    public DbSet<OpcaoTamanho> OpcaoTamanhos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Categoria>().ToTable("categorias");
         modelBuilder.Entity<Produto>().ToTable("produtos");
-        modelBuilder.Entity<CategoriaProduto>().ToTable("categorias_produtos");
         modelBuilder.Entity<ProdutoImagem>().ToTable("produto_imagens");
         modelBuilder.Entity<ProdutoEstoque>().ToTable("produto_estoque");
         modelBuilder.Entity<Compra>().ToTable("compras");
         modelBuilder.Entity<CompraItem>().ToTable("compra_itens");
-
-        modelBuilder.Entity<CategoriaProduto>()
-            .HasKey(cp => new { cp.ProdutoId, cp.CategoriaId });
+        modelBuilder.Entity<TipoTamanho>().ToTable("tipos_tamanhos");
+        modelBuilder.Entity<OpcaoTamanho>().ToTable("opcao_tamanhos");
 
         modelBuilder.Entity<CompraItem>()
             .HasKey(ci => new { ci.CompraId, ci.ProdutoId });
+
+        modelBuilder.Entity<OpcaoTamanho>()
+            .HasOne(o => o.Tipo)
+            .WithMany(t => t.Opcoes)
+            .HasForeignKey(o => o.TipoId);
+
+        modelBuilder.Entity<ProdutoEstoque>()
+            .HasOne(e => e.Tamanho)
+            .WithMany(o => o.Estoques)
+            .HasForeignKey(e => e.TamanhoId);
+
+        modelBuilder.Entity<Produto>()
+            .HasOne(p => p.Categoria)
+            .WithMany(c => c.Produtos)
+            .HasForeignKey(p => p.CategoriaId);
     }
 }

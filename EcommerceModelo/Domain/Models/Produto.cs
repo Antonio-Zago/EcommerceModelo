@@ -16,7 +16,9 @@ public class Produto
     [Column("descricao")]
     public string Descricao { get; set; } = string.Empty;
 
-    public ICollection<CategoriaProduto> CategoriasProdutos { get; set; } = new List<CategoriaProduto>();
+    [Column("categoria")]
+    public int CategoriaId { get; set; }
+    public Categoria? Categoria { get; set; }
 
     public ICollection<ProdutoImagem> Imagens { get; set; } = new List<ProdutoImagem>();
 

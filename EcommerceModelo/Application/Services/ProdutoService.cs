@@ -25,7 +25,7 @@ public class ProdutoService : BaseService<Produto>, IProdutoService
 
     public async Task CadastrarComEstoqueAsync(
         Produto produto,
-        List<(string tamanho, int quantidade)> estoques,
+        List<(int tamanhoId, int quantidade)> estoques,
         List<(Stream stream, string nomeOriginal)> imagens,
         int imagemPrincipalIndex,
         string pastaFisica)
@@ -55,13 +55,13 @@ public class ProdutoService : BaseService<Produto>, IProdutoService
             });
         }
 
-        // 3. Registra um ProdutoEstoque por tamanho
-        foreach (var (tamanho, quantidade) in estoques)
+        // 3. Registra um ProdutoEstoque por opcao de tamanho (FK)
+        foreach (var (tamanhoId, quantidade) in estoques)
         {
             await _produtoEstoqueRepository.AdicionarAsync(new ProdutoEstoque
             {
                 ProdutoId = produto.Id,
-                Tamanho = tamanho,
+                TamanhoId = tamanhoId,
                 Quantidade = quantidade
             });
         }

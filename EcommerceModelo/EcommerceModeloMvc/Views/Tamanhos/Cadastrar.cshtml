@@ -1,0 +1,231 @@
+@model EcommerceModeloMvc.ViewModels.CadastroTipoTamanhoViewModel
+@using Domain.Models
+@using EcommerceModeloMvc.ViewModels
+
+@{
+    ViewData["Title"] = "Cadastrar Tamanhos";
+
+    var tipos  = ViewBag.Tipos  as IEnumerable<TipoTamanho>  ?? Enumerable.Empty<TipoTamanho>();
+    var opcoes = ViewBag.Opcoes as IEnumerable<OpcaoTamanho> ?? Enumerable.Empty<OpcaoTamanho>();
+    var tabAtiva = (ViewBag.TabAtiva as string) ?? TempData["TabAtiva"] as string ?? "tipos";
+
+    var opcaoVm = ViewBag.OpcaoViewModel as CadastroOpcaoTamanhoViewModel
+                  ?? new CadastroOpcaoTamanhoViewModel();
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new("Cadastrar Tamanhos")
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cadastroProduto.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<div class="row justify-content-center">
+<h1 class="mb-4">Cadastrar Tamanhos</h1>
+<div class="col-12 col-xl-9 col-xxl-8">
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Sucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewData.ModelState[string.Empty]!.Errors.FirstOrDefault()?.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* ── Tabs ── *@
+<ul class="nav nav-tabs mb-4" id="tamanhosTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(tabAtiva == "tipos" ? "active" : "")"
+                id="tab-tipos" data-bs-toggle="tab" data-bs-target="#painel-tipos"
+                type="button" role="tab">
+            Tipos de Tamanho
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(tabAtiva == "opcoes" ? "active" : "")"
+                id="tab-opcoes" data-bs-toggle="tab" data-bs-target="#painel-opcoes"
+                type="button" role="tab">
+            Opções de Tamanho
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    @* ══════════════════════════════════
+       TAB — Tipos de Tamanho
+    ══════════════════════════════════ *@
+    <div class="tab-pane fade @(tabAtiva == "tipos" ? "show active" : "")"
+         id="painel-tipos" role="tabpanel">
+
+        <form asp-action="CadastrarTipo" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-section-card">
+                <div class="form-section-title">Novo Tipo de Tamanho</div>
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-7">
+                        <label asp-for="Nome" class="form-label">Nome <span class="text-danger">*</span></label>
+                        <input asp-for="Nome" class="form-control" placeholder="Números, letras, etc" maxlength="100" />
+                        <span asp-validation-for="Nome" class="text-danger small"></span>
+                    </div>
+                    <div class="col-12 col-md-auto">
+                        <button type="submit" class="btn btn-primary px-4">Cadastrar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        @* Lista dos tipos cadastrados *@
+        <div class="form-section-card">
+            <div class="form-section-title">Tipos Cadastrados</div>
+            @if (!tipos.Any())
+            {
+                <p class="text-muted small mb-0">Nenhum tipo cadastrado ainda.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Nome</th>
+                                <th class="text-end">Opções vinculadas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var tipo in tipos)
+                            {
+                                <tr>
+                                    <td class="text-muted small">@tipo.Id</td>
+                                    <td>@tipo.Nome</td>
+                                    <td class="text-end text-muted small">
+                                        @opcoes.Count(o => o.TipoId == tipo.Id)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    @* ══════════════════════════════════
+       TAB — Opções de Tamanho
+    ══════════════════════════════════ *@
+    <div class="tab-pane fade @(tabAtiva == "opcoes" ? "show active" : "")"
+         id="painel-opcoes" role="tabpanel">
+
+        <form asp-action="CadastrarOpcao" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-section-card">
+                <div class="form-section-title">Nova Opção de Tamanho</div>
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="opcao-tipo">
+                            Tipo <span class="text-danger">*</span>
+                        </label>
+                        @if (!tipos.Any())
+                        {
+                            <div class="text-warning small mt-1">
+                                Cadastre ao menos um tipo antes de adicionar opções.
+                            </div>
+                        }
+                        else
+                        {
+                            <select id="opcao-tipo" name="TipoId" class="form-select"
+                                    required>
+                                <option value="">— Selecione —</option>
+                                @foreach (var tipo in tipos)
+                                {
+                                    <option value="@tipo.Id"
+                                            selected="@(opcaoVm.TipoId == tipo.Id)">
+                                        @tipo.Nome
+                                    </option>
+                                }
+                            </select>
+                            <span class="text-danger small">
+                                @Html.ValidationMessage("TipoId")
+                            </span>
+                        }
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <label class="form-label" for="opcao-descricao">
+                            Descrição <span class="text-danger">*</span>
+                        </label>
+                        <input id="opcao-descricao" name="Descricao" type="text"
+                               class="form-control" placeholder="Ex.: P, M, G, 38, 40..."
+                               maxlength="100" value="@opcaoVm.Descricao" required />
+                        <span class="text-danger small">
+                            @Html.ValidationMessage("Descricao")
+                        </span>
+                    </div>
+                    <div class="col-12 col-md-auto">
+                        <button type="submit" class="btn btn-primary px-4"
+                                @(!tipos.Any() ? "disabled" : "")>
+                            Cadastrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        @* Lista das opções cadastradas *@
+        <div class="form-section-card">
+            <div class="form-section-title">Opções Cadastradas</div>
+            @if (!opcoes.Any())
+            {
+                <p class="text-muted small mb-0">Nenhuma opção cadastrada ainda.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Tipo</th>
+                                <th>Descrição</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var opcao in opcoes.OrderBy(o => o.Tipo?.Nome).ThenBy(o => o.Descricao))
+                            {
+                                <tr>
+                                    <td class="text-muted small">@opcao.Id</td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 fw-normal">
+                                            @opcao.Tipo?.Nome
+                                        </span>
+                                    </td>
+                                    <td>@opcao.Descricao</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+</div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
