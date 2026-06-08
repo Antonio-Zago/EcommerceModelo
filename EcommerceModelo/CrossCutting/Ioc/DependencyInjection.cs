@@ -37,6 +37,7 @@ public static class DependencyInjection
         services.AddScoped<IProdutoEstoqueService, ProdutoEstoqueService>();
         services.AddScoped<IOpcaoTamanhoService, OpcaoTamanhoService>();
         services.AddScoped<ITipoTamanhoService, TipoTamanhoService>();
+        services.AddScoped<IImportacaoProdutosService, ImportacaoProdutosService>();
 
         return services;
     }

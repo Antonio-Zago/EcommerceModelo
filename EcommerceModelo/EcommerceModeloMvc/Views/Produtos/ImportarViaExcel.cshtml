@@ -1,0 +1,229 @@
+@model EcommerceModeloMvc.ViewModels.ImportarProdutosViewModel
+@using Application.Dtos.Importacao
+
+@{
+    ViewData["Title"] = "Importar Produtos via Excel";
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new("Importar produtos via Excel")
+    };
+
+    var resultado = ViewBag.Resultado as ResultadoImportacaoDto;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cadastroProduto.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<div class="row justify-content-center">
+
+<h1 class="mb-4">Importar produtos via Excel</h1>
+<div class="col-12 col-xl-9 col-xxl-8">
+
+@* ── Resultado da importação ── *@
+@if (resultado != null)
+{
+    if (resultado.Sucesso && resultado.ProdutosCadastrados > 0)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>@resultado.ProdutosCadastrados produto(s) importado(s) com sucesso!</strong>
+            <ul class="mb-0 mt-1">
+                @foreach (var nome in resultado.ProdutosImportados)
+                {
+                    <li>@nome</li>
+                }
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    else if (resultado.ProdutosCadastrados > 0 && resultado.Erros.Count > 0)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>@resultado.ProdutosCadastrados produto(s) importado(s) com sucesso.</strong> Alguns itens apresentaram erros:
+            <ul class="mb-0 mt-1">
+                @foreach (var erro in resultado.Erros)
+                {
+                    <li>@erro</li>
+                }
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    else if (resultado.Erros.Count > 0)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Nenhum produto foi importado.</strong> Corrija os erros abaixo e tente novamente:
+            <ul class="mb-0 mt-1">
+                @foreach (var erro in resultado.Erros)
+                {
+                    <li>@erro</li>
+                }
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+}
+
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewData.ModelState[string.Empty]!.Errors.FirstOrDefault()?.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* ── Instruções ── *@
+<div class="form-section-card">
+    <div class="form-section-title">Como importar</div>
+    <div class="row g-3 align-items-start">
+        <div class="col-12 col-md-8">
+            <p class="mb-2 small text-muted">Siga as instruções abaixo para importar múltiplos produtos de uma vez:</p>
+            <ol class="small text-muted ps-3 mb-0">
+                <li class="mb-1">Baixe o arquivo modelo clicando no botão ao lado.</li>
+                <li class="mb-1">Preencha as colunas conforme descrito — uma linha por tamanho/estoque do produto.</li>
+                <li class="mb-1">Produtos com o mesmo <strong>Nome</strong> são tratados como um único produto com vários tamanhos.</li>
+                <li class="mb-1">As colunas <strong>Foto1, Foto2, Foto3</strong> devem conter o caminho relativo da imagem (ex.: <code>/images/produtos/camiseta.png</code>). As fotos já precisam estar salvas no servidor.</li>
+                <li class="mb-1">Consulte a aba <strong>Referência</strong> do modelo para ver as categorias e tamanhos cadastrados.</li>
+                <li class="mb-0">Salve o arquivo no formato <strong>.xlsx</strong> e envie abaixo.</li>
+            </ol>
+        </div>
+        <div class="col-12 col-md-4 d-flex flex-column gap-2">
+            <a asp-action="DownloadModeloExcel" class="btn btn-outline-primary w-100">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="me-1">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Baixar Modelo Excel
+            </a>
+            <div class="border rounded p-2 small text-muted">
+                <strong>Colunas do arquivo:</strong><br/>
+                Nome · Preco · Descricao · Categoria<br/>
+                TipoTamanho · OpcaoTamanho · QtdEstoque<br/>
+                Foto1 · Foto2 · Foto3
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ── Upload do arquivo ── *@
+<form id="formImportarExcel" asp-action="ImportarViaExcel" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="form-section-card">
+        <div class="form-section-title">Arquivo Excel</div>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <input type="file" id="inputArquivo" name="Arquivo" accept=".xlsx" style="display:none" />
+
+                <div class="upload-area" id="uploadArea" role="button" tabindex="0">
+                    <button type="button" id="btnSelecionarArquivo" class="btn btn-outline-secondary">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="me-1">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        Selecionar arquivo .xlsx
+                    </button>
+                    <p class="text-muted small mt-2 mb-0">Arraste o arquivo aqui ou clique para selecionar</p>
+                </div>
+
+                <div id="arquivoSelecionado" class="mt-2" style="display:none;">
+                    <div class="d-flex align-items-center gap-2 p-2 border rounded bg-light">
+                        <svg width="20" height="20" fill="none" stroke="#198754" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        <span id="nomeArquivo" class="small fw-semibold text-success flex-grow-1"></span>
+                        <button type="button" id="btnRemoverArquivo" class="btn btn-outline-danger btn-sm py-0">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <span asp-validation-for="Arquivo" class="text-danger small d-block mt-1"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-2 mb-5">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary px-4">Cancelar</a>
+        <button type="submit" id="btnImportar" class="btn btn-primary px-5" disabled>
+            <span id="spinnerImportar" class="spinner-border spinner-border-sm me-2" role="status" style="display:none;"></span>
+            Importar Produtos
+        </button>
+    </div>
+</form>
+
+</div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const inputArquivo = document.getElementById('inputArquivo');
+        const uploadArea = document.getElementById('uploadArea');
+        const btnSelecionarArquivo = document.getElementById('btnSelecionarArquivo');
+        const arquivoSelecionado = document.getElementById('arquivoSelecionado');
+        const nomeArquivo = document.getElementById('nomeArquivo');
+        const btnRemoverArquivo = document.getElementById('btnRemoverArquivo');
+        const btnImportar = document.getElementById('btnImportar');
+        const form = document.getElementById('formImportarExcel');
+
+        btnSelecionarArquivo.addEventListener('click', () => inputArquivo.click());
+        uploadArea.addEventListener('click', e => { if (e.target === uploadArea) inputArquivo.click(); });
+        uploadArea.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') inputArquivo.click(); });
+
+        uploadArea.addEventListener('dragover', e => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#0d6efd';
+            uploadArea.style.background = '#f0f5ff';
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '';
+            uploadArea.style.background = '';
+        });
+        uploadArea.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '';
+            uploadArea.style.background = '';
+            if (e.dataTransfer.files.length > 0) {
+                const dt = new DataTransfer();
+                dt.items.add(e.dataTransfer.files[0]);
+                inputArquivo.files = dt.files;
+                mostrarArquivo(e.dataTransfer.files[0].name);
+            }
+        });
+
+        inputArquivo.addEventListener('change', () => {
+            if (inputArquivo.files.length > 0)
+                mostrarArquivo(inputArquivo.files[0].name);
+        });
+
+        btnRemoverArquivo.addEventListener('click', () => {
+            inputArquivo.value = '';
+            arquivoSelecionado.style.display = 'none';
+            uploadArea.style.display = '';
+            btnImportar.disabled = true;
+        });
+
+        function mostrarArquivo(nome) {
+            nomeArquivo.textContent = nome;
+            arquivoSelecionado.style.display = '';
+            uploadArea.style.display = 'none';
+            btnImportar.disabled = false;
+        }
+
+        form.addEventListener('submit', () => {
+            btnImportar.disabled = true;
+            document.getElementById('spinnerImportar').style.display = 'inline-block';
+        });
+    </script>
+}
