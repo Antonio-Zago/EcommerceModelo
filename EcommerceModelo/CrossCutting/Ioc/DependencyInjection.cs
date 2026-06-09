@@ -1,6 +1,7 @@
 using Application.Interfaces;
 using Application.Services;
 using Domain.Interfaces;
+using Infrastructure.BackgroundJobs;
 using Infrastructure.Context;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,10 @@ public static class DependencyInjection
         services.AddScoped<IOpcaoTamanhoService, OpcaoTamanhoService>();
         services.AddScoped<ITipoTamanhoService, TipoTamanhoService>();
         services.AddScoped<IImportacaoProdutosService, ImportacaoProdutosService>();
+
+        // Background jobs — Singleton: estado compartilhado entre requests e worker
+        services.AddSingleton<IJobStore, JobStore>();
+        services.AddSingleton<IImportacaoQueue, ImportacaoQueue>();
 
         return services;
     }

@@ -1,0 +1,243 @@
+@model Application.BackgroundJobs.JobStatus
+@using Application.BackgroundJobs
+
+@{
+    ViewData["Title"] = "Acompanhar Importação";
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new("Importações", "/Importacoes"),
+        new("Acompanhar")
+    };
+
+    var concluido = Model.Status is StatusImportacao.Concluido or StatusImportacao.Falhou;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cadastroProduto.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<div class="row justify-content-center">
+<div class="col-12 col-xl-9 col-xxl-8">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="mb-0">Acompanhar importação</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Ver todas</a>
+    </div>
+
+    @* ── Cabeçalho do job ── *@
+    <div class="form-section-card">
+        <div class="form-section-title">Informações do processo</div>
+        <div class="row g-2 small">
+            <div class="col-12 col-md-6">
+                <span class="text-muted">Arquivo:</span>
+                <strong class="ms-1">@Model.NomeArquivo</strong>
+            </div>
+            <div class="col-6 col-md-3">
+                <span class="text-muted">Iniciado em:</span>
+                <strong class="ms-1">@Model.CriadoEm.ToString("dd/MM HH:mm:ss")</strong>
+            </div>
+            <div class="col-6 col-md-3">
+                <span class="text-muted">Concluído em:</span>
+                <strong class="ms-1" id="concluidoEm">
+                    @(Model.ConcluidoEm.HasValue ? Model.ConcluidoEm.Value.ToString("dd/MM HH:mm:ss") : "—")
+                </strong>
+            </div>
+        </div>
+    </div>
+
+    @* ── Status e barra de progresso ── *@
+    <div class="form-section-card">
+        <div class="form-section-title">Progresso</div>
+
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <span id="badgeStatus" class="badge fs-6 px-3 py-2
+                @(Model.Status == StatusImportacao.Concluido ? "bg-success" :
+                  Model.Status == StatusImportacao.Falhou    ? "bg-danger"  :
+                  Model.Status == StatusImportacao.Processando ? "bg-primary" : "bg-secondary")">
+                @(Model.Status switch {
+                    StatusImportacao.Aguardando  => "⏳ Aguardando",
+                    StatusImportacao.Processando => "⚙️ Processando",
+                    StatusImportacao.Concluido   => "✅ Concluído",
+                    StatusImportacao.Falhou      => "❌ Falhou",
+                    _ => Model.Status
+                })
+            </span>
+            <span id="textoProgresso" class="text-muted small">
+                @if (Model.Total > 0)
+                {
+                    <text>@Model.Processados de @Model.Total produtos</text>
+                }
+            </span>
+            <span id="spinnerProgresso" class="spinner-border spinner-border-sm text-primary ms-1"
+                  style="@(concluido ? "display:none" : "")"></span>
+        </div>
+
+        <div class="progress" style="height: 12px;">
+            <div id="barraProgresso"
+                 class="progress-bar progress-bar-striped @(!concluido ? "progress-bar-animated" : "")"
+                 role="progressbar"
+                 style="width: @(Model.Total > 0 ? (Model.Processados * 100 / Model.Total) : 0)%"
+                 aria-valuenow="@Model.Processados"
+                 aria-valuemin="0"
+                 aria-valuemax="@Model.Total">
+            </div>
+        </div>
+    </div>
+
+    @* ── Resultados ── *@
+    <div id="secaoResultados" class="@(!concluido ? "d-none" : "")">
+
+        @if (Model.ProdutosImportados.Count > 0)
+        {
+            <div class="form-section-card" id="secaoSucesso">
+                <div class="form-section-title">
+                    Importados com sucesso
+                    <span class="badge bg-success ms-2">@Model.ProdutosImportados.Count</span>
+                </div>
+                <ul class="list-unstyled mb-0" id="listaSucesso">
+                    @foreach (var nome in Model.ProdutosImportados)
+                    {
+                        <li class="py-1 border-bottom small">
+                            <svg width="14" height="14" fill="none" stroke="#198754" stroke-width="2.5" viewBox="0 0 24 24" class="me-1">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                            @nome
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @if (Model.Erros.Count > 0)
+        {
+            <div class="form-section-card" id="secaoErros">
+                <div class="form-section-title">
+                    Erros encontrados
+                    <span class="badge bg-danger ms-2">@Model.Erros.Count</span>
+                </div>
+                <ul class="list-unstyled mb-0" id="listaErros">
+                    @foreach (var erro in Model.Erros)
+                    {
+                        <li class="py-1 border-bottom small text-danger">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="me-1">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            @erro
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+    </div>
+
+    <div class="d-flex gap-2 mt-2 mb-5">
+        <a asp-controller="Produtos" asp-action="ImportarViaExcel" class="btn btn-primary px-4">
+            Nova importação
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+            Ver histórico
+        </a>
+    </div>
+
+</div>
+</div>
+
+@section Scripts {
+<script>
+    const jobId     = '@Model.Id';
+    const jaConcluido = @Json.Serialize(concluido);
+
+    if (!jaConcluido) {
+        const intervalo = setInterval(async () => {
+            try {
+                const res  = await fetch(`/Importacoes/Status?jobId=${jobId}`);
+                if (!res.ok) return;
+                const data = await res.json();
+
+                // barra de progresso
+                const pct = data.total > 0 ? Math.round(data.processados * 100 / data.total) : 0;
+                document.getElementById('barraProgresso').style.width = pct + '%';
+                document.getElementById('barraProgresso').setAttribute('aria-valuenow', data.processados);
+                document.getElementById('barraProgresso').setAttribute('aria-valuemax', data.total);
+
+                // texto
+                if (data.total > 0)
+                    document.getElementById('textoProgresso').textContent =
+                        `${data.processados} de ${data.total} produtos`;
+
+                // badge de status
+                const badge  = document.getElementById('badgeStatus');
+                const labels = {
+                    aguardando:  '⏳ Aguardando',
+                    processando: '⚙️ Processando',
+                    concluido:   '✅ Concluído',
+                    falhou:      '❌ Falhou'
+                };
+                const cores = {
+                    aguardando:  'bg-secondary',
+                    processando: 'bg-primary',
+                    concluido:   'bg-success',
+                    falhou:      'bg-danger'
+                };
+                badge.textContent = labels[data.status] ?? data.status;
+                badge.className   = `badge fs-6 px-3 py-2 ${cores[data.status] ?? 'bg-secondary'}`;
+
+                if (data.status === 'concluido' || data.status === 'falhou') {
+                    clearInterval(intervalo);
+                    document.getElementById('spinnerProgresso').style.display = 'none';
+                    document.getElementById('barraProgresso').classList.remove('progress-bar-animated');
+
+                    if (data.concluidoEm)
+                        document.getElementById('concluidoEm').textContent =
+                            new Date(data.concluidoEm).toLocaleString('pt-BR');
+
+                    renderizarResultados(data);
+                    document.getElementById('secaoResultados').classList.remove('d-none');
+                }
+
+            } catch (e) { /* rede instável — tenta novamente no próximo tick */ }
+        }, 2000);
+    }
+
+    function renderizarResultados(data) {
+        if (data.importados?.length) {
+            let html = `<div class="form-section-card">
+                <div class="form-section-title">
+                    Importados com sucesso
+                    <span class="badge bg-success ms-2">${data.importados.length}</span>
+                </div>
+                <ul class="list-unstyled mb-0">`;
+            data.importados.forEach(n => {
+                html += `<li class="py-1 border-bottom small">
+                    <svg width="14" height="14" fill="none" stroke="#198754" stroke-width="2.5" viewBox="0 0 24 24" class="me-1">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>${n}</li>`;
+            });
+            html += '</ul></div>';
+            document.getElementById('secaoResultados').insertAdjacentHTML('afterbegin', html);
+        }
+
+        if (data.erros?.length) {
+            let html = `<div class="form-section-card">
+                <div class="form-section-title">
+                    Erros encontrados
+                    <span class="badge bg-danger ms-2">${data.erros.length}</span>
+                </div>
+                <ul class="list-unstyled mb-0">`;
+            data.erros.forEach(e => {
+                html += `<li class="py-1 border-bottom small text-danger">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="me-1">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>${e}</li>`;
+            });
+            html += '</ul></div>';
+            document.getElementById('secaoResultados').insertAdjacentHTML('beforeend', html);
+        }
+    }
+</script>
+}

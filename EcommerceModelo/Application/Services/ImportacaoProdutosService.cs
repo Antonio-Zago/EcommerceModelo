@@ -22,7 +22,10 @@ public class ImportacaoProdutosService : IImportacaoProdutosService
         _opcaoTamanhoService = opcaoTamanhoService;
     }
 
-    public async Task<ResultadoImportacaoDto> ImportarAsync(IEnumerable<LinhaImportacaoDto> linhas, string webRootPath)
+    public async Task<ResultadoImportacaoDto> ImportarAsync(
+        IEnumerable<LinhaImportacaoDto> linhas,
+        string webRootPath,
+        IProgress<(int processados, int total)>? progresso = null)
     {
         var resultado = new ResultadoImportacaoDto();
 
@@ -32,7 +35,12 @@ public class ImportacaoProdutosService : IImportacaoProdutosService
 
         var grupos = linhas
             .Where(l => !string.IsNullOrWhiteSpace(l.Nome))
-            .GroupBy(l => l.Nome);
+            .GroupBy(l => l.Nome)
+            .ToList();
+
+        var total = grupos.Count;
+        var processados = 0;
+        progresso?.Report((0, total));
 
         foreach (var grupo in grupos)
         {
@@ -93,6 +101,9 @@ public class ImportacaoProdutosService : IImportacaoProdutosService
                 foreach (var (stream, _) in streams)
                     stream.Dispose();
             }
+
+            processados++;
+            progresso?.Report((processados, total));
         }
 
         resultado.ProdutosCadastrados = resultado.ProdutosImportados.Count;

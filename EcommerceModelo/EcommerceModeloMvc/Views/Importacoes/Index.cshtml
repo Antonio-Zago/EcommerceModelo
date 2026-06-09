@@ -1,0 +1,104 @@
+@model IReadOnlyList<Application.BackgroundJobs.JobStatus>
+@using Application.BackgroundJobs
+
+@{
+    ViewData["Title"] = "Histórico de Importações";
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new("Importações")
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cadastroProduto.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<div class="row justify-content-center">
+<div class="col-12 col-xl-10">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="mb-0">Histórico de importações</h1>
+        <a asp-controller="Produtos" asp-action="ImportarViaExcel" class="btn btn-primary btn-sm px-3">
+            + Nova importação
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="form-section-card text-center py-5 text-muted">
+            <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="mb-3 opacity-25">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <p class="mb-0">Nenhuma importação realizada ainda.</p>
+        </div>
+    }
+    else
+    {
+        <div class="form-section-card p-0 overflow-hidden">
+            <table class="table table-hover mb-0 small">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3 py-3">Arquivo</th>
+                        <th>Iniciado em</th>
+                        <th>Concluído em</th>
+                        <th>Status</th>
+                        <th class="text-center">Importados</th>
+                        <th class="text-center">Erros</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var job in Model)
+                    {
+                        <tr>
+                            <td class="ps-3 align-middle fw-semibold">@job.NomeArquivo</td>
+                            <td class="align-middle text-muted">@job.CriadoEm.ToString("dd/MM/yy HH:mm")</td>
+                            <td class="align-middle text-muted">
+                                @(job.ConcluidoEm.HasValue ? job.ConcluidoEm.Value.ToString("dd/MM/yy HH:mm") : "—")
+                            </td>
+                            <td class="align-middle">
+                                @{
+                                    var (badgeClass, label) = job.Status switch
+                                    {
+                                        StatusImportacao.Concluido   => ("bg-success", "Concluído"),
+                                        StatusImportacao.Falhou      => ("bg-danger",  "Falhou"),
+                                        StatusImportacao.Processando => ("bg-primary", "Processando"),
+                                        _                            => ("bg-secondary","Aguardando")
+                                    };
+                                }
+                                <span class="badge @badgeClass">@label</span>
+                            </td>
+                            <td class="align-middle text-center">
+                                @if (job.ProdutosImportados.Count > 0)
+                                {
+                                    <span class="text-success fw-semibold">@job.ProdutosImportados.Count</span>
+                                }
+                                else { <span class="text-muted">—</span> }
+                            </td>
+                            <td class="align-middle text-center">
+                                @if (job.Erros.Count > 0)
+                                {
+                                    <span class="text-danger fw-semibold">@job.Erros.Count</span>
+                                }
+                                else { <span class="text-muted">—</span> }
+                            </td>
+                            <td class="align-middle pe-3 text-end">
+                                <a asp-action="Detalhes" asp-route-jobId="@job.Id"
+                                   class="btn btn-outline-secondary btn-sm">
+                                    Ver detalhes
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>
+</div>

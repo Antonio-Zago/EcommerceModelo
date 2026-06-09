@@ -1,3 +1,4 @@
+using Application.BackgroundJobs;
 using Application.Dtos.Importacao;
 using Application.Interfaces;
 using ClosedXML.Excel;
@@ -12,7 +13,8 @@ public class ProdutosController : Controller
     private readonly IProdutoService _produtoService;
     private readonly ICategoriaService _categoriaService;
     private readonly IOpcaoTamanhoService _opcaoTamanhoService;
-    private readonly IImportacaoProdutosService _importacaoProdutosService;
+    private readonly IImportacaoQueue _importacaoQueue;
+    private readonly IJobStore _jobStore;
     private readonly IWebHostEnvironment _env;
 
     private static readonly string[] _extensoesPermitidas = [".jpg", ".jpeg", ".png", ".webp"];
@@ -22,15 +24,19 @@ public class ProdutosController : Controller
         IProdutoService produtoService,
         ICategoriaService categoriaService,
         IOpcaoTamanhoService opcaoTamanhoService,
-        IImportacaoProdutosService importacaoProdutosService,
+        IImportacaoQueue importacaoQueue,
+        IJobStore jobStore,
         IWebHostEnvironment env)
     {
         _produtoService = produtoService;
         _categoriaService = categoriaService;
         _opcaoTamanhoService = opcaoTamanhoService;
-        _importacaoProdutosService = importacaoProdutosService;
+        _importacaoQueue = importacaoQueue;
+        _jobStore = jobStore;
         _env = env;
     }
+
+    // ── Cadastrar produto individual ─────────────────────────────────────────
 
     public async Task<IActionResult> Cadastrar()
     {
@@ -101,19 +107,13 @@ public class ProdutosController : Controller
         }
     }
 
-    public IActionResult ImportarViaExcel()
-    {
-        ResultadoImportacaoDto? resultado = null;
-        if (TempData["ResultadoImportacao"] is string json)
-            resultado = System.Text.Json.JsonSerializer.Deserialize<ResultadoImportacaoDto>(json);
+    // ── Importar via Excel ───────────────────────────────────────────────────
 
-        ViewBag.Resultado = resultado;
-        return View(new ImportarProdutosViewModel());
-    }
+    public IActionResult ImportarViaExcel() => View(new ImportarProdutosViewModel());
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ImportarViaExcel(ImportarProdutosViewModel viewModel)
+    public IActionResult ImportarViaExcel(ImportarProdutosViewModel viewModel)
     {
         if (!ModelState.IsValid)
             return View(viewModel);
@@ -135,17 +135,26 @@ public class ProdutosController : Controller
                 return View(viewModel);
             }
 
-            var resultado = await _importacaoProdutosService.ImportarAsync(linhas, _env.WebRootPath);
-            TempData["ResultadoImportacao"] = System.Text.Json.JsonSerializer.Serialize(resultado);
+            var jobId = Guid.NewGuid();
+            _jobStore.Criar(jobId, viewModel.Arquivo!.FileName);
+            _importacaoQueue.Enfileirar(new ImportJob
+            {
+                Id = jobId,
+                NomeArquivo = viewModel.Arquivo!.FileName,
+                Linhas = linhas,
+                WebRootPath = _env.WebRootPath
+            });
+
+            return RedirectToAction("Detalhes", "Importacoes", new { jobId });
         }
         catch (Exception ex)
         {
             ModelState.AddModelError(string.Empty, $"Erro ao processar o arquivo: {ex.Message}");
             return View(viewModel);
         }
-
-        return RedirectToAction(nameof(ImportarViaExcel));
     }
+
+    // ── Download do modelo Excel ─────────────────────────────────────────────
 
     public async Task<IActionResult> DownloadModeloExcel()
     {
@@ -219,8 +228,12 @@ public class ProdutosController : Controller
         using var stream = new MemoryStream();
         workbook.SaveAs(stream);
 
-        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "modelo_importacao_produtos.xlsx");
+        return File(stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "modelo_importacao_produtos.xlsx");
     }
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
 
     private static List<LinhaImportacaoDto> ExtrairLinhasDoExcel(IFormFile arquivo)
     {
@@ -234,21 +247,26 @@ public class ProdutosController : Controller
         return rows
             .Select((row, idx) =>
             {
-                var fotos = new[] { row.Cell(8).GetString().Trim(), row.Cell(9).GetString().Trim(), row.Cell(10).GetString().Trim() }
-                    .Where(f => !string.IsNullOrWhiteSpace(f))
-                    .ToList();
+                var fotos = new[]
+                {
+                    row.Cell(8).GetString().Trim(),
+                    row.Cell(9).GetString().Trim(),
+                    row.Cell(10).GetString().Trim()
+                }
+                .Where(f => !string.IsNullOrWhiteSpace(f))
+                .ToList();
 
                 return new LinhaImportacaoDto
                 {
-                    NumeroLinha = idx + 2,
-                    Nome = row.Cell(1).GetString().Trim(),
-                    Preco = row.Cell(2).GetString().Trim(),
-                    Descricao = row.Cell(3).GetString().Trim(),
-                    Categoria = row.Cell(4).GetString().Trim(),
-                    TipoTamanho = row.Cell(5).GetString().Trim(),
+                    NumeroLinha  = idx + 2,
+                    Nome         = row.Cell(1).GetString().Trim(),
+                    Preco        = row.Cell(2).GetString().Trim(),
+                    Descricao    = row.Cell(3).GetString().Trim(),
+                    Categoria    = row.Cell(4).GetString().Trim(),
+                    TipoTamanho  = row.Cell(5).GetString().Trim(),
                     OpcaoTamanho = row.Cell(6).GetString().Trim(),
-                    QtdEstoque = row.Cell(7).GetString().Trim(),
-                    UrlsImagens = fotos,
+                    QtdEstoque   = row.Cell(7).GetString().Trim(),
+                    UrlsImagens  = fotos,
                 };
             })
             .Where(l => !string.IsNullOrWhiteSpace(l.Nome))
