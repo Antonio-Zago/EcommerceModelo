@@ -39,6 +39,11 @@ public static class DependencyInjection
         services.AddScoped<IOpcaoTamanhoService, OpcaoTamanhoService>();
         services.AddScoped<ITipoTamanhoService, TipoTamanhoService>();
         services.AddScoped<IImportacaoProdutosService, ImportacaoProdutosService>();
+        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+        services.AddScoped<IPapelRepository, PapelRepository>();
+        services.AddScoped<IPapelUsuarioRepository, PapelUsuarioRepository>();
+        services.AddScoped<IUsuarioService, UsuarioService>();
+        services.AddScoped<IPapelService, PapelService>();
 
         // Background jobs — Singleton: estado compartilhado entre requests e worker
         services.AddSingleton<IJobStore, JobStore>();

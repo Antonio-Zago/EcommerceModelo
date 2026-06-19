@@ -15,6 +15,9 @@ public class AppDbContext : DbContext
     public DbSet<ProdutoEstoque> ProdutoEstoques { get; set; }
     public DbSet<TipoTamanho> TipoTamanhos { get; set; }
     public DbSet<OpcaoTamanho> OpcaoTamanhos { get; set; }
+    public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<Papel> Papeis { get; set; }
+    public DbSet<PapelUsuario> PapeisUsuario { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,9 +29,25 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<CompraItem>().ToTable("compra_itens");
         modelBuilder.Entity<TipoTamanho>().ToTable("tipos_tamanhos");
         modelBuilder.Entity<OpcaoTamanho>().ToTable("opcao_tamanhos");
+        modelBuilder.Entity<Usuario>().ToTable("usuarios");
+        modelBuilder.Entity<Papel>().ToTable("papeis");
+        modelBuilder.Entity<PapelUsuario>().ToTable("papel_usuarios");
 
         modelBuilder.Entity<CompraItem>()
             .HasKey(ci => new { ci.CompraId, ci.ProdutoId });
+
+        modelBuilder.Entity<PapelUsuario>()
+            .HasKey(pu => new { pu.UsuarioId, pu.PapelId });
+
+        modelBuilder.Entity<PapelUsuario>()
+            .HasOne(pu => pu.Usuario)
+            .WithMany(u => u.PapeisUsuario)
+            .HasForeignKey(pu => pu.UsuarioId);
+
+        modelBuilder.Entity<PapelUsuario>()
+            .HasOne(pu => pu.Papel)
+            .WithMany(p => p.PapeisUsuario)
+            .HasForeignKey(pu => pu.PapelId);
 
         modelBuilder.Entity<OpcaoTamanho>()
             .HasOne(o => o.Tipo)

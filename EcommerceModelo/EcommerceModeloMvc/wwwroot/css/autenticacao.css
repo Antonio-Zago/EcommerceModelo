@@ -1,0 +1,135 @@
+.auth-wrapper {
+    min-height: calc(100vh - 72px - 280px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 460px;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 2.5rem;
+}
+
+.auth-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.25rem;
+}
+
+.auth-subtitle {
+    font-size: 0.82rem;
+    color: #999;
+    margin-bottom: 2rem;
+}
+
+.auth-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: #555;
+    margin-bottom: 0.35rem;
+}
+
+.auth-input {
+    border: 1.5px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.88rem;
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+    border-color: #1a1a1a;
+    outline: none;
+    box-shadow: none;
+}
+
+.auth-input.is-invalid {
+    border-color: #dc3545;
+}
+
+.auth-btn {
+    width: 100%;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    padding: 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+}
+
+.auth-btn:hover {
+    background: #333;
+}
+
+.auth-divider {
+    text-align: center;
+    font-size: 0.78rem;
+    color: #bbb;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 24px);
+    height: 1px;
+    background: #e8e8e8;
+}
+
+.auth-divider::before { left: 0; }
+.auth-divider::after  { right: 0; }
+
+.auth-link {
+    font-size: 0.82rem;
+    color: #1a1a1a;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+}
+
+.auth-link:hover {
+    color: #555;
+}
+
+.auth-footer-text {
+    text-align: center;
+    font-size: 0.82rem;
+    color: #999;
+    margin-top: 1.5rem;
+}
+
+.remember-label {
+    font-size: 0.82rem;
+    color: #555;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+}

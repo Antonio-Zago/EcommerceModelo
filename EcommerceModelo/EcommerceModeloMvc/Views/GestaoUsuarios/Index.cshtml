@@ -1,0 +1,117 @@
+@model EcommerceModeloMvc.ViewModels.GestaoUsuariosViewModel
+
+@{
+    ViewData["Title"] = "Gestão de Usuários";
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new("Gestão de Usuários")
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/autenticacao.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<h1 class="mb-4">Gestão de Usuários</h1>
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Sucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="form-section-card">
+    <div class="form-section-title">Usuários cadastrados</div>
+
+    @if (!Model.Usuarios.Any())
+    {
+        <p class="text-muted small">Nenhum usuário cadastrado.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:#888; font-weight:500">Nome</th>
+                        <th style="font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:#888; font-weight:500">E-mail</th>
+                        <th style="font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:#888; font-weight:500">Papéis</th>
+                        <th style="font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; color:#888; font-weight:500">Atribuir papel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var usuario in Model.Usuarios)
+                    {
+                        <tr>
+                            <td class="small fw-500">@usuario.Nome</td>
+                            <td class="small text-muted">@usuario.Email</td>
+
+                            <td>
+                                @if (!usuario.PapeisUsuario.Any())
+                                {
+                                    <span class="text-muted small">Nenhum</span>
+                                }
+                                else
+                                {
+                                    @foreach (var pu in usuario.PapeisUsuario)
+                                    {
+                                        <span class="badge me-1 mb-1"
+                                              style="background:#1a1a1a; font-size:.7rem; letter-spacing:.05em; font-weight:500">
+                                            @pu.Papel.Nome
+                                        </span>
+                                        <form asp-action="RemoverPapel" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="usuarioId" value="@usuario.Id" />
+                                            <input type="hidden" name="papelId" value="@pu.PapelId" />
+                                            <button type="submit"
+                                                    class="btn btn-link btn-sm p-0 text-danger"
+                                                    style="font-size:.7rem; vertical-align:middle"
+                                                    title="Remover @pu.Papel.Nome"
+                                                    onclick="return confirm('Remover papel @pu.Papel.Nome de @usuario.Nome?')">
+                                                ✕
+                                            </button>
+                                        </form>
+                                    }
+                                }
+                            </td>
+
+                            <td>
+                                @{
+                                    var papeisDoUsuario = usuario.PapeisUsuario.Select(pu => pu.PapelId).ToHashSet();
+                                    var papeisDisponiveis = Model.Papeis.Where(p => !papeisDoUsuario.Contains(p.Id)).ToList();
+                                }
+
+                                @if (papeisDisponiveis.Any())
+                                {
+                                    <form asp-action="AtribuirPapel" method="post" class="d-flex gap-2 align-items-center">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="usuarioId" value="@usuario.Id" />
+                                        <select name="papelId" class="form-select form-select-sm" style="max-width:140px">
+                                            @foreach (var papel in papeisDisponiveis)
+                                            {
+                                                <option value="@papel.Id">@papel.Nome</option>
+                                            }
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" style="font-size:.75rem; white-space:nowrap">
+                                            + Atribuir
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Todos os papéis atribuídos</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

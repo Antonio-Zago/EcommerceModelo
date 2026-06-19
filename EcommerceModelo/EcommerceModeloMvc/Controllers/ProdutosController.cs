@@ -4,10 +4,12 @@ using Application.Interfaces;
 using ClosedXML.Excel;
 using Domain.Models;
 using EcommerceModeloMvc.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceModeloMvc.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class ProdutosController : Controller
 {
     private readonly IProdutoService _produtoService;

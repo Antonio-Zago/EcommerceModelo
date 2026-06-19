@@ -1,9 +1,11 @@
 using Application.BackgroundJobs;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceModeloMvc.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class ImportacoesController : Controller
 {
     private readonly IJobStore _jobStore;
