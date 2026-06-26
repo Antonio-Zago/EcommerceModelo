@@ -44,6 +44,7 @@ public static class DependencyInjection
         services.AddScoped<IPapelUsuarioRepository, PapelUsuarioRepository>();
         services.AddScoped<IUsuarioService, UsuarioService>();
         services.AddScoped<IPapelService, PapelService>();
+        services.AddScoped<ICarrinhoService, CarrinhoService>();
 
         // Background jobs — Singleton: estado compartilhado entre requests e worker
         services.AddSingleton<IJobStore, JobStore>();

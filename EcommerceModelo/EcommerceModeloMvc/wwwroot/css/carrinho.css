@@ -1,0 +1,256 @@
+.carrinho-page {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.carrinho-titulo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Vazio ── */
+.carrinho-vazio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 4rem 0;
+    color: #888;
+}
+
+.carrinho-vazio svg {
+    stroke: #ccc;
+}
+
+.carrinho-vazio p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.btn-continuar {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+}
+
+.btn-continuar:hover {
+    background: #333;
+    color: #fff;
+}
+
+/* ── Layout principal ── */
+.carrinho-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .carrinho-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Item ── */
+.carrinho-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.item-imagem {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+.item-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-sem-imagem {
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+}
+
+.item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-nome {
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-tamanho {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 0.25rem;
+}
+
+.item-preco {
+    font-size: 0.875rem;
+    color: #555;
+}
+
+/* ── Ações do item ── */
+.item-acoes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.form-quantidade {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-qtd {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.btn-qtd:hover {
+    background: #f5f5f5;
+}
+
+.qtd-valor {
+    font-size: 0.9rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+.item-subtotal {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.btn-remover {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #aaa;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.btn-remover:hover {
+    color: #c00;
+}
+
+/* ── Resumo ── */
+.carrinho-resumo {
+    background: #fafafa;
+    border: 1px solid #eee;
+    padding: 1.5rem;
+    position: sticky;
+    top: 80px;
+}
+
+.resumo-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+}
+
+.resumo-linha {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: #555;
+    margin-bottom: 0.75rem;
+}
+
+.resumo-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: 600;
+    border-top: 1px solid #ddd;
+    padding-top: 0.75rem;
+    margin: 1rem 0;
+}
+
+.btn-finalizar {
+    width: 100%;
+    padding: 0.75rem;
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.btn-finalizar:hover:not(:disabled) {
+    background: #333;
+}
+
+.btn-finalizar:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.resumo-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.link-continuar {
+    font-size: 0.8rem;
+    color: #555;
+    text-decoration: none;
+}
+
+.link-continuar:hover {
+    color: #111;
+}
+
+.link-limpar {
+    border: none;
+    background: transparent;
+    color: #aaa;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0;
+}
+
+.link-limpar:hover {
+    color: #c00;
+    text-decoration: underline;
+}

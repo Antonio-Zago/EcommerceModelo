@@ -1,0 +1,125 @@
+@model Domain.Models.Carrinho
+@{
+    ViewData["Title"] = "Meu Carrinho";
+}
+
+<link rel="stylesheet" href="~/css/carrinho.css" asp-append-version="true" />
+
+<div class="carrinho-page">
+    <h2 class="carrinho-titulo">Meu Carrinho</h2>
+
+    @if (TempData["Sucesso"] is string sucesso)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @sucesso
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Itens.Any())
+    {
+        <div class="carrinho-vazio">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <p>Seu carrinho está vazio.</p>
+            <a href="/" class="btn-continuar">Continuar comprando</a>
+        </div>
+    }
+    else
+    {
+        <div class="carrinho-layout">
+            <!-- Itens -->
+            <div class="carrinho-itens">
+                @foreach (var item in Model.Itens)
+                {
+                    <div class="carrinho-item">
+                        <div class="item-imagem">
+                            @if (!string.IsNullOrEmpty(item.ImagemUrl))
+                            {
+                                <img src="@item.ImagemUrl" alt="@item.Nome" />
+                            }
+                            else
+                            {
+                                <div class="item-sem-imagem"></div>
+                            }
+                        </div>
+
+                        <div class="item-info">
+                            <div class="item-nome">@item.Nome</div>
+                            @if (!string.IsNullOrEmpty(item.TamanhoNome))
+                            {
+                                <div class="item-tamanho">Tamanho: @item.TamanhoNome</div>
+                            }
+                            <div class="item-preco">R$ @item.Preco.ToString("N2")</div>
+                        </div>
+
+                        <div class="item-acoes">
+                            <!-- Atualizar quantidade -->
+                            <form asp-action="AtualizarQuantidade" method="post" class="form-quantidade">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+                                <input type="hidden" name="tamanhoId" value="@item.TamanhoId" />
+                                <button type="submit" name="quantidade" value="@(item.Quantidade - 1)" class="btn-qtd">−</button>
+                                <span class="qtd-valor">@item.Quantidade</span>
+                                <button type="submit" name="quantidade" value="@(item.Quantidade + 1)" class="btn-qtd">+</button>
+                            </form>
+
+                            <div class="item-subtotal">R$ @item.Subtotal.ToString("N2")</div>
+
+                            <!-- Remover -->
+                            <form asp-action="Remover" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+                                <input type="hidden" name="tamanhoId" value="@item.TamanhoId" />
+                                <button type="submit" class="btn-remover" title="Remover item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                                        <path d="M10 11v6M14 11v6"></path>
+                                        <path d="M9 6V4h6v2"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Resumo -->
+            <aside class="carrinho-resumo">
+                <h4 class="resumo-titulo">Resumo do pedido</h4>
+
+                <div class="resumo-linha">
+                    <span>Subtotal (@Model.QuantidadeTotal @(Model.QuantidadeTotal == 1 ? "item" : "itens"))</span>
+                    <span>R$ @Model.Total.ToString("N2")</span>
+                </div>
+                <div class="resumo-linha">
+                    <span>Frete</span>
+                    <span class="text-muted">A calcular</span>
+                </div>
+
+                <div class="resumo-total">
+                    <span>Total</span>
+                    <span>R$ @Model.Total.ToString("N2")</span>
+                </div>
+
+                <button class="btn-finalizar" disabled>Finalizar pedido</button>
+
+                <div class="resumo-acoes">
+                    <a href="/" class="link-continuar">← Continuar comprando</a>
+
+                    <form asp-action="Limpar" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="link-limpar"
+                                onclick="return confirm('Deseja limpar todo o carrinho?')">
+                            Limpar carrinho
+                        </button>
+                    </form>
+                </div>
+            </aside>
+        </div>
+    }
+</div>

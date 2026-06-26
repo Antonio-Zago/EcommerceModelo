@@ -1,8 +1,8 @@
 services:
   ecommercedb:
      image: postgres:16
-  ecommer-redis:          
-    image: redis
+  ecommer-redis:
+    image: redis:7-alpine
 volumes:
   postgres_ecommerce:
   redis_ecommerce:
