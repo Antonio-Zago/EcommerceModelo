@@ -55,8 +55,6 @@ iisexpress/
 *.sqlite
 *.db
 
-# Docker
-docker-compose.override.yml
 
 # Node modules (caso use frontend)
 node_modules/

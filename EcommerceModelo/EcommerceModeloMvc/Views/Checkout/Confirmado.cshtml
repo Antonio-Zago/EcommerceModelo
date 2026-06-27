@@ -1,0 +1,99 @@
+@model Domain.Models.Compra
+@{
+    ViewData["Title"] = "Pedido Confirmado";
+
+    string FormaPagamentoLabel(string forma) => forma switch
+    {
+        "pix"           => "Pix",
+        "boleto"        => "Boleto bancário",
+        "cartao_credito"=> "Cartão de crédito",
+        _               => forma
+    };
+}
+
+<link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+
+<div class="confirmado-page">
+    <div class="confirmado-header">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2d8a4e" stroke-width="1.5">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <h2>Pedido confirmado!</h2>
+        <p class="text-muted">Obrigado pela sua compra. Seu pedido foi recebido com sucesso.</p>
+    </div>
+
+    <div class="confirmado-layout">
+
+        <!-- Itens -->
+        <section class="confirmado-secao">
+            <h5 class="secao-titulo">Itens do pedido</h5>
+            <table class="tabela-itens">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th class="text-center">Qtd</th>
+                        <th class="text-end">Preço unit.</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Itens)
+                    {
+                        <tr>
+                            <td>@item.NomeProduto</td>
+                            <td class="text-center">@item.Quantidade</td>
+                            <td class="text-end">R$ @item.PrecoUnitario.ToString("N2")</td>
+                            <td class="text-end">R$ @((item.PrecoUnitario * item.Quantidade).ToString("N2"))</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-semibold">Total</td>
+                        <td class="text-end fw-semibold">R$ @Model.Total.ToString("N2")</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Detalhes -->
+        <aside class="confirmado-detalhes">
+
+            <div class="detalhe-bloco">
+                <h6>Número do pedido</h6>
+                <p class="detalhe-destaque">#@Model.Id</p>
+            </div>
+
+            <div class="detalhe-bloco">
+                <h6>Forma de pagamento</h6>
+                <p>@FormaPagamentoLabel(Model.FormaPagamento)</p>
+            </div>
+
+            <div class="detalhe-bloco">
+                <h6>Entrega prevista</h6>
+                <p class="detalhe-destaque">@Model.EntregaPrevista.ToString("dd/MM/yyyy")</p>
+            </div>
+
+            <div class="detalhe-bloco">
+                <h6>Endereço de entrega</h6>
+                <p>
+                    @Model.Endereco.Rua, @Model.Endereco.Numero
+                    @if (!string.IsNullOrEmpty(Model.Endereco.Complemento))
+                    {
+                        <text> — @Model.Endereco.Complemento</text>
+                    }
+                    <br />
+                    @Model.Endereco.Bairro — @Model.Endereco.Cidade / @Model.Endereco.Uf
+                    <br />
+                    CEP @Model.Endereco.Cep
+                </p>
+            </div>
+
+        </aside>
+    </div>
+
+    <div class="confirmado-acoes">
+        <a href="/" class="btn-continuar-comprando">Continuar comprando</a>
+    </div>
+</div>

@@ -45,6 +45,13 @@ public static class DependencyInjection
         services.AddScoped<IUsuarioService, UsuarioService>();
         services.AddScoped<IPapelService, PapelService>();
         services.AddScoped<ICarrinhoService, CarrinhoService>();
+        services.AddScoped<ICheckoutService, CheckoutService>();
+
+        services.AddHttpClient<IViaCepService, ViaCepService>(client =>
+        {
+            client.BaseAddress = new Uri("https://viacep.com.br/");
+            client.Timeout = TimeSpan.FromSeconds(5);
+        });
 
         // Background jobs — Singleton: estado compartilhado entre requests e worker
         services.AddSingleton<IJobStore, JobStore>();

@@ -1,0 +1,364 @@
+/* ── Geral ── */
+.checkout-page,
+.confirmado-page {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.checkout-titulo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.75rem;
+}
+
+/* ── Layout dois painéis ── */
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .checkout-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Seções do formulário ── */
+.checkout-secao {
+    background: #fafafa;
+    border: 1px solid #eee;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.secao-titulo {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+/* ── Form fields ── */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-row {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.form-control {
+    border: 1px solid #ddd;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    width: 100%;
+    outline: none;
+    border-radius: 0;
+}
+
+.form-control:focus {
+    border-color: #111;
+}
+
+.form-control[readonly] {
+    background: #f5f5f5;
+    color: #888;
+}
+
+/* ── CEP spinner ── */
+.input-cep-wrapper {
+    position: relative;
+}
+
+.cep-spinner {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.spin {
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Pagamento ── */
+.pagamento-opcoes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pagamento-opcao {
+    cursor: pointer;
+    margin: 0;
+}
+
+.pagamento-opcao input[type="radio"] {
+    display: none;
+}
+
+.pagamento-card {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    border: 1px solid #ddd;
+    padding: 0.875rem 1rem;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.pagamento-opcao input:checked + .pagamento-card {
+    border-color: #111;
+    background: #f8f8f8;
+}
+
+.pagamento-card svg {
+    flex-shrink: 0;
+    color: #555;
+}
+
+.pagamento-nome {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.pagamento-desc {
+    font-size: 0.75rem;
+    color: #888;
+    margin-left: auto;
+}
+
+/* ── Resumo lateral ── */
+.checkout-resumo {
+    background: #fafafa;
+    border: 1px solid #eee;
+    padding: 1.5rem;
+    position: sticky;
+    top: 80px;
+}
+
+.resumo-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.resumo-itens {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.resumo-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.resumo-item-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+}
+
+.resumo-item-nome {
+    font-weight: 500;
+}
+
+.resumo-item-tamanho,
+.resumo-item-qtd {
+    color: #888;
+}
+
+.resumo-item-valor {
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.resumo-linha {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.resumo-entrega {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.resumo-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: 600;
+    border-top: 1px solid #ddd;
+    padding-top: 0.75rem;
+    margin: 0.75rem 0 1.25rem;
+}
+
+.btn-confirmar {
+    width: 100%;
+    padding: 0.8rem;
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    margin-bottom: 0.75rem;
+}
+
+.btn-confirmar:hover {
+    background: #333;
+}
+
+.link-voltar {
+    display: block;
+    font-size: 0.8rem;
+    color: #555;
+    text-decoration: none;
+    text-align: center;
+}
+
+.link-voltar:hover {
+    color: #111;
+}
+
+/* ── Confirmado ── */
+.confirmado-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.confirmado-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.confirmado-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .confirmado-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.confirmado-secao {
+    background: #fafafa;
+    border: 1px solid #eee;
+    padding: 1.5rem;
+}
+
+.tabela-itens {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.tabela-itens th {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #888;
+    padding: 0 0 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+.tabela-itens td {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tabela-itens tfoot td {
+    border-top: 1px solid #ddd;
+    border-bottom: none;
+    padding-top: 0.75rem;
+}
+
+.confirmado-detalhes {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.detalhe-bloco {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-bottom: none;
+    padding: 1rem 1.25rem;
+}
+
+.detalhe-bloco:last-child {
+    border-bottom: 1px solid #eee;
+}
+
+.detalhe-bloco h6 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.25rem;
+}
+
+.detalhe-bloco p {
+    font-size: 0.875rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.detalhe-destaque {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+
+.confirmado-acoes {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-continuar-comprando {
+    display: inline-block;
+    padding: 0.7rem 2rem;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+}
+
+.btn-continuar-comprando:hover {
+    background: #333;
+    color: #fff;
+}

@@ -1,0 +1,204 @@
+@model EcommerceModeloMvc.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Finalizar Pedido";
+}
+
+<link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+
+<div class="checkout-page">
+    <h2 class="checkout-titulo">Finalizar Pedido</h2>
+
+    <form asp-action="Confirmar" method="post" class="checkout-layout">
+        @Html.AntiForgeryToken()
+
+        <!-- ── Coluna esquerda ─────────────────────────── -->
+        <div class="checkout-form">
+
+            <!-- Endereço -->
+            <section class="checkout-secao">
+                <h4 class="secao-titulo">Endereço de entrega</h4>
+
+                <div class="campo-cep">
+                    <div class="form-group">
+                        <label asp-for="Pedido.Cep">CEP</label>
+                        <div class="input-cep-wrapper">
+                            <input asp-for="Pedido.Cep" class="form-control" placeholder="00000-000"
+                                   maxlength="9" id="inputCep" autocomplete="postal-code" />
+                            <span id="cepSpinner" class="cep-spinner d-none">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+                                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Pedido.Cep" class="text-danger small"></span>
+                        <span id="cepErro" class="text-danger small d-none">CEP não encontrado.</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-grow-1">
+                        <label asp-for="Pedido.Rua">Rua</label>
+                        <input asp-for="Pedido.Rua" class="form-control" id="inputRua" />
+                        <span asp-validation-for="Pedido.Rua" class="text-danger small"></span>
+                    </div>
+                    <div class="form-group" style="width:120px">
+                        <label asp-for="Pedido.Numero">Número</label>
+                        <input asp-for="Pedido.Numero" class="form-control" id="inputNumero" />
+                        <span asp-validation-for="Pedido.Numero" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Pedido.Complemento">Complemento <span class="text-muted">(opcional)</span></label>
+                    <input asp-for="Pedido.Complemento" class="form-control" placeholder="Apto, bloco..." />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-grow-1">
+                        <label asp-for="Pedido.Bairro">Bairro</label>
+                        <input asp-for="Pedido.Bairro" class="form-control" id="inputBairro" />
+                        <span asp-validation-for="Pedido.Bairro" class="text-danger small"></span>
+                    </div>
+                    <div class="form-group flex-grow-1">
+                        <label asp-for="Pedido.Cidade">Cidade</label>
+                        <input asp-for="Pedido.Cidade" class="form-control" id="inputCidade" readonly />
+                        <span asp-validation-for="Pedido.Cidade" class="text-danger small"></span>
+                    </div>
+                    <div class="form-group" style="width:80px">
+                        <label asp-for="Pedido.Uf">UF</label>
+                        <input asp-for="Pedido.Uf" class="form-control" id="inputUf" maxlength="2" readonly />
+                        <span asp-validation-for="Pedido.Uf" class="text-danger small"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Forma de pagamento -->
+            <section class="checkout-secao">
+                <h4 class="secao-titulo">Forma de pagamento</h4>
+                <span asp-validation-for="Pedido.FormaPagamento" class="text-danger small d-block mb-2"></span>
+
+                <div class="pagamento-opcoes">
+                    <label class="pagamento-opcao">
+                        <input type="radio" asp-for="Pedido.FormaPagamento" value="pix" />
+                        <div class="pagamento-card">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                            </svg>
+                            <span class="pagamento-nome">Pix</span>
+                            <span class="pagamento-desc">Aprovação imediata</span>
+                        </div>
+                    </label>
+
+                    <label class="pagamento-opcao">
+                        <input type="radio" asp-for="Pedido.FormaPagamento" value="boleto" />
+                        <div class="pagamento-card">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                            </svg>
+                            <span class="pagamento-nome">Boleto</span>
+                            <span class="pagamento-desc">Vence em 3 dias úteis</span>
+                        </div>
+                    </label>
+
+                    <label class="pagamento-opcao">
+                        <input type="radio" asp-for="Pedido.FormaPagamento" value="cartao_credito" />
+                        <div class="pagamento-card">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                                <line x1="6" y1="15" x2="10" y2="15"/>
+                            </svg>
+                            <span class="pagamento-nome">Cartão de crédito</span>
+                            <span class="pagamento-desc">Até 12x sem juros</span>
+                        </div>
+                    </label>
+                </div>
+            </section>
+        </div>
+
+        <!-- ── Coluna direita — resumo ─────────────────── -->
+        <aside class="checkout-resumo">
+            <h4 class="resumo-titulo">Resumo do pedido</h4>
+
+            <div class="resumo-itens">
+                @foreach (var item in Model.Carrinho.Itens)
+                {
+                    <div class="resumo-item">
+                        <div class="resumo-item-info">
+                            <span class="resumo-item-nome">@item.Nome</span>
+                            @if (!string.IsNullOrEmpty(item.TamanhoNome))
+                            {
+                                <span class="resumo-item-tamanho">Tam. @item.TamanhoNome</span>
+                            }
+                            <span class="resumo-item-qtd">Qtd: @item.Quantidade</span>
+                        </div>
+                        <span class="resumo-item-valor">R$ @item.Subtotal.ToString("N2")</span>
+                    </div>
+                }
+            </div>
+
+            <div class="resumo-linha">
+                <span>Subtotal</span>
+                <span>R$ @Model.Carrinho.Total.ToString("N2")</span>
+            </div>
+            <div class="resumo-linha">
+                <span>Frete</span>
+                <span class="text-muted">A calcular</span>
+            </div>
+            <div class="resumo-linha resumo-entrega">
+                <span>Entrega prevista</span>
+                <span id="dataEntrega">~7 dias úteis</span>
+            </div>
+
+            <div class="resumo-total">
+                <span>Total</span>
+                <span>R$ @Model.Carrinho.Total.ToString("N2")</span>
+            </div>
+
+            <button type="submit" class="btn-confirmar">Confirmar pedido</button>
+
+            <a href="/Carrinho" class="link-voltar">← Voltar ao carrinho</a>
+        </aside>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+    const inputCep = document.getElementById('inputCep');
+    const spinner  = document.getElementById('cepSpinner');
+    const cepErro  = document.getElementById('cepErro');
+
+    inputCep.addEventListener('input', () => {
+        let v = inputCep.value.replace(/\D/g, '');
+        if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5, 8);
+        inputCep.value = v;
+    });
+
+    inputCep.addEventListener('blur', async () => {
+        const cep = inputCep.value.replace(/\D/g, '');
+        if (cep.length !== 8) return;
+
+        spinner.classList.remove('d-none');
+        cepErro.classList.add('d-none');
+
+        try {
+            const resp = await fetch(`/Checkout/BuscarCep?cep=${cep}`);
+
+            if (!resp.ok) {
+                cepErro.classList.remove('d-none');
+                return;
+            }
+
+            const data = await resp.json();
+            document.getElementById('inputRua').value    = data.logradouro ?? '';
+            document.getElementById('inputBairro').value = data.bairro     ?? '';
+            document.getElementById('inputCidade').value = data.localidade ?? '';
+            document.getElementById('inputUf').value     = data.uf         ?? '';
+            document.getElementById('inputNumero').focus();
+        } catch {
+            cepErro.classList.remove('d-none');
+        } finally {
+            spinner.classList.add('d-none');
+        }
+    });
+</script>
+}

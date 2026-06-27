@@ -106,7 +106,7 @@
                     <span>R$ @Model.Total.ToString("N2")</span>
                 </div>
 
-                <button class="btn-finalizar" disabled>Finalizar pedido</button>
+                <a asp-controller="Checkout" asp-action="Index" class="btn-finalizar">Finalizar pedido</a>
 
                 <div class="resumo-acoes">
                     <a href="/" class="link-continuar">← Continuar comprando</a>

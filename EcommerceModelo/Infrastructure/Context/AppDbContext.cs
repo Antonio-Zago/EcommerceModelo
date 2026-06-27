@@ -26,7 +26,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ProdutoImagem>().ToTable("produto_imagens");
         modelBuilder.Entity<ProdutoEstoque>().ToTable("produto_estoque");
         modelBuilder.Entity<Compra>().ToTable("compras");
-        modelBuilder.Entity<CompraItem>().ToTable("compra_itens");
+        modelBuilder.Entity<CompraItem>().ToTable("compras_itens");
         modelBuilder.Entity<TipoTamanho>().ToTable("tipos_tamanhos");
         modelBuilder.Entity<OpcaoTamanho>().ToTable("opcao_tamanhos");
         modelBuilder.Entity<Usuario>().ToTable("usuarios");
@@ -35,6 +35,23 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<CompraItem>()
             .HasKey(ci => new { ci.CompraId, ci.ProdutoId });
+
+        // Compra — endereço como owned entity (colunas na mesma tabela)
+        modelBuilder.Entity<Compra>().OwnsOne(c => c.Endereco, e =>
+        {
+            e.Property(x => x.Cep).HasColumnName("endereco_cep");
+            e.Property(x => x.Rua).HasColumnName("endereco_rua");
+            e.Property(x => x.Numero).HasColumnName("endereco_numero");
+            e.Property(x => x.Complemento).HasColumnName("endereco_complemento");
+            e.Property(x => x.Bairro).HasColumnName("endereco_bairro");
+            e.Property(x => x.Cidade).HasColumnName("endereco_cidade");
+            e.Property(x => x.Uf).HasColumnName("endereco_uf");
+        });
+
+        modelBuilder.Entity<Compra>()
+            .HasMany(c => c.Itens)
+            .WithOne(i => i.Compra)
+            .HasForeignKey(i => i.CompraId);
 
         modelBuilder.Entity<PapelUsuario>()
             .HasKey(pu => new { pu.UsuarioId, pu.PapelId });
