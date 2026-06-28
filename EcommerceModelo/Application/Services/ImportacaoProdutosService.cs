@@ -1,5 +1,6 @@
 using Application.Dtos.Importacao;
 using Application.Interfaces;
+using Domain.Enums;
 using Domain.Models;
 
 namespace Application.Services;
@@ -59,6 +60,14 @@ public class ImportacaoProdutosService : IImportacaoProdutosService
                 continue;
             }
 
+            if (!TryParseGenero(primeiraLinha.Genero, out var genero))
+            {
+                resultado.Erros.Add($"Produto \"{nomeProduto}\" (linha {primeiraLinha.NumeroLinha}): gênero \"{primeiraLinha.Genero}\" inválido. Use \"Masculino\" ou \"Feminino\".");
+                continue;
+            }
+
+            var ehInfantil = ParseEhInfantil(primeiraLinha.EhInfantil);
+
             var categoria = categorias.FirstOrDefault(c =>
                 c.Nome.Equals(primeiraLinha.Categoria, StringComparison.OrdinalIgnoreCase));
             if (categoria == null)
@@ -90,7 +99,9 @@ public class ImportacaoProdutosService : IImportacaoProdutosService
                     Nome = nomeProduto,
                     Preco = preco,
                     Descricao = primeiraLinha.Descricao,
-                    CategoriaId = categoria.Id
+                    CategoriaId = categoria.Id,
+                    Genero = genero,
+                    EhInfantil = ehInfantil
                 };
 
                 await _produtoService.CadastrarComEstoqueAsync(produto, estoques, streams, 0, pastaFisica);
@@ -109,6 +120,20 @@ public class ImportacaoProdutosService : IImportacaoProdutosService
         resultado.ProdutosCadastrados = resultado.ProdutosImportados.Count;
         return resultado;
     }
+
+    private static bool TryParseGenero(string valor, out Genero genero)
+    {
+        genero = default;
+        return valor.Equals("Masculino", StringComparison.OrdinalIgnoreCase)
+            ? (genero = Genero.Masculino) == Genero.Masculino
+            : valor.Equals("Feminino", StringComparison.OrdinalIgnoreCase)
+                && (genero = Genero.Feminino) == Genero.Feminino;
+    }
+
+    private static bool ParseEhInfantil(string valor)
+        => valor.Equals("Sim", StringComparison.OrdinalIgnoreCase) ||
+           valor.Equals("S", StringComparison.OrdinalIgnoreCase) ||
+           valor.Equals("true", StringComparison.OrdinalIgnoreCase);
 
     private static bool TryParsePreco(string valor, out decimal preco)
         => decimal.TryParse(

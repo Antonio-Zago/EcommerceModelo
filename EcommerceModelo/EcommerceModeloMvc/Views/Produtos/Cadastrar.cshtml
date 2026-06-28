@@ -1,5 +1,6 @@
 @model EcommerceModeloMvc.ViewModels.CadastroProdutoViewModel
 @using Domain.Models
+@using Domain.Enums
 
 @{
     ViewData["Title"] = "Cadastrar Produto";
@@ -82,6 +83,25 @@
                     <span asp-validation-for="CategoriaId" class="text-danger small"></span>
                 </div>
             }
+
+            @* ── Gênero ── *@
+            <div class="col-12 col-md-4">
+                <label asp-for="Genero" class="form-label">Gênero <span class="text-danger">*</span></label>
+                <select asp-for="Genero" class="form-select">
+                    <option value="">— Selecione —</option>
+                    <option value="@((int)Genero.Masculino)" selected="@(Model.Genero == Genero.Masculino)">Masculino</option>
+                    <option value="@((int)Genero.Feminino)" selected="@(Model.Genero == Genero.Feminino)">Feminino</option>
+                </select>
+                <span asp-validation-for="Genero" class="text-danger small"></span>
+            </div>
+
+            @* ── Infantil ── *@
+            <div class="col-12 col-md-3 d-flex align-items-end pb-1">
+                <div class="form-check">
+                    <input asp-for="EhInfantil" class="form-check-input" type="checkbox" />
+                    <label asp-for="EhInfantil" class="form-check-label">Produto infantil</label>
+                </div>
+            </div>
 
             @* ── Tamanhos e Estoque ── *@
             <div class="col-12">

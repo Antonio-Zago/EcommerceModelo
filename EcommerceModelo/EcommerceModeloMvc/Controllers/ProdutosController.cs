@@ -2,6 +2,7 @@ using Application.BackgroundJobs;
 using Application.Dtos.Importacao;
 using Application.Interfaces;
 using ClosedXML.Excel;
+using Domain.Enums;
 using Domain.Models;
 using EcommerceModeloMvc.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -83,7 +84,9 @@ public class ProdutosController : Controller
                 Nome = viewModel.Nome,
                 Preco = viewModel.Preco,
                 Descricao = viewModel.Descricao,
-                CategoriaId = viewModel.CategoriaId
+                CategoriaId = viewModel.CategoriaId,
+                Genero = viewModel.Genero,
+                EhInfantil = viewModel.EhInfantil
             };
 
             var estoques = viewModel.Tamanhos!
@@ -166,7 +169,7 @@ public class ProdutosController : Controller
         using var workbook = new XLWorkbook();
         var ws = workbook.Worksheets.Add("Produtos");
 
-        var headers = new[] { "Nome", "Preco", "Descricao", "Categoria", "TipoTamanho", "OpcaoTamanho", "QtdEstoque", "Foto1", "Foto2", "Foto3" };
+        var headers = new[] { "Nome", "Preco", "Descricao", "Categoria", "Genero", "EhInfantil", "TipoTamanho", "OpcaoTamanho", "QtdEstoque", "Foto1", "Foto2", "Foto3" };
         for (int i = 0; i < headers.Length; i++)
         {
             var cell = ws.Cell(1, i + 1);
@@ -184,29 +187,34 @@ public class ProdutosController : Controller
         var tipoEx2 = segundaOpcao?.Tipo?.Nome ?? "Letras";
         var opcaoEx2 = segundaOpcao?.Descricao ?? "G";
 
+        // Coluna: Nome=1, Preco=2, Descricao=3, Categoria=4, Genero=5, EhInfantil=6, TipoTamanho=7, OpcaoTamanho=8, QtdEstoque=9, Foto1=10, Foto2=11, Foto3=12
         ws.Cell(2, 1).Value = "Camiseta Branca Básica";
         ws.Cell(2, 2).Value = 59.90;
         ws.Cell(2, 3).Value = "Camiseta básica de algodão, corte clássico.";
         ws.Cell(2, 4).Value = categoriaNome;
-        ws.Cell(2, 5).Value = tipoEx1;
-        ws.Cell(2, 6).Value = opcaoEx1;
-        ws.Cell(2, 7).Value = 10;
-        ws.Cell(2, 8).Value = "/images/produtos/camiseta-branca.png";
-        ws.Cell(2, 9).Value = "/images/produtos/camiseta-preta.png";
+        ws.Cell(2, 5).Value = "Masculino";
+        ws.Cell(2, 6).Value = "Não";
+        ws.Cell(2, 7).Value = tipoEx1;
+        ws.Cell(2, 8).Value = opcaoEx1;
+        ws.Cell(2, 9).Value = 10;
+        ws.Cell(2, 10).Value = "/images/produtos/camiseta-branca.png";
+        ws.Cell(2, 11).Value = "/images/produtos/camiseta-preta.png";
 
         ws.Cell(3, 1).Value = "Camiseta Branca Básica";
-        ws.Cell(3, 5).Value = tipoEx2;
-        ws.Cell(3, 6).Value = opcaoEx2;
-        ws.Cell(3, 7).Value = 5;
+        ws.Cell(3, 7).Value = tipoEx2;
+        ws.Cell(3, 8).Value = opcaoEx2;
+        ws.Cell(3, 9).Value = 5;
 
         ws.Cell(4, 1).Value = "Calça Jeans Slim";
         ws.Cell(4, 2).Value = 149.90;
         ws.Cell(4, 3).Value = "Calça jeans slim fit, lavagem escura.";
         ws.Cell(4, 4).Value = categoriaNome;
-        ws.Cell(4, 5).Value = tipoEx1;
-        ws.Cell(4, 6).Value = opcaoEx1;
-        ws.Cell(4, 7).Value = 8;
-        ws.Cell(4, 8).Value = "/images/produtos/calca-jeans-slim.png";
+        ws.Cell(4, 5).Value = "Feminino";
+        ws.Cell(4, 6).Value = "Não";
+        ws.Cell(4, 7).Value = tipoEx1;
+        ws.Cell(4, 8).Value = opcaoEx1;
+        ws.Cell(4, 9).Value = 8;
+        ws.Cell(4, 10).Value = "/images/produtos/calca-jeans-slim.png";
 
         var wsRef = workbook.Worksheets.Add("Referência");
         wsRef.Cell(1, 1).Value = "Categorias disponíveis";
@@ -251,9 +259,9 @@ public class ProdutosController : Controller
             {
                 var fotos = new[]
                 {
-                    row.Cell(8).GetString().Trim(),
-                    row.Cell(9).GetString().Trim(),
-                    row.Cell(10).GetString().Trim()
+                    row.Cell(10).GetString().Trim(),
+                    row.Cell(11).GetString().Trim(),
+                    row.Cell(12).GetString().Trim()
                 }
                 .Where(f => !string.IsNullOrWhiteSpace(f))
                 .ToList();
@@ -265,9 +273,11 @@ public class ProdutosController : Controller
                     Preco        = row.Cell(2).GetString().Trim(),
                     Descricao    = row.Cell(3).GetString().Trim(),
                     Categoria    = row.Cell(4).GetString().Trim(),
-                    TipoTamanho  = row.Cell(5).GetString().Trim(),
-                    OpcaoTamanho = row.Cell(6).GetString().Trim(),
-                    QtdEstoque   = row.Cell(7).GetString().Trim(),
+                    Genero       = row.Cell(5).GetString().Trim(),
+                    EhInfantil   = row.Cell(6).GetString().Trim(),
+                    TipoTamanho  = row.Cell(7).GetString().Trim(),
+                    OpcaoTamanho = row.Cell(8).GetString().Trim(),
+                    QtdEstoque   = row.Cell(9).GetString().Trim(),
                     UrlsImagens  = fotos,
                 };
             })

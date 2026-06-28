@@ -1,68 +1,53 @@
-﻿using Application.Dtos.HomePage;
+using Application.Dtos.HomePage;
+using Application.Interfaces;
+using Domain.Enums;
+using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceModeloMvc.Controllers
 {
     public class RoupasController : Controller
     {
-        public IActionResult Novidades()
-        {
-            var produtos = new List<ProdutoDto>() {
-                new ProdutoDto { Nome = "Blazer Oversized",   ImagemPrincipalUrl = "/images/modelo.jfif"  },
-                new ProdutoDto { Nome = "Calça Wide Leg",     ImagemPrincipalUrl = "/images/modelo2.jpg"  },
-                new ProdutoDto { Nome = "Top Cropped",        ImagemPrincipalUrl = "/images/modelo.jfif"  },
-                new ProdutoDto { Nome = "Vestido Midi",       ImagemPrincipalUrl = "/images/modelo2.jpg"  },
-                new ProdutoDto { Nome = "Camisa Linho",       ImagemPrincipalUrl = "/images/modelo.jfif"  },
-                new ProdutoDto { Nome = "Jaqueta Jeans",      ImagemPrincipalUrl = "/images/modelo2.jpg"  },
-                new ProdutoDto { Nome = "Short Alfaiataria",  ImagemPrincipalUrl = "/images/modelo.jfif"  },
-            };
+        private readonly IProdutoService _produtoService;
 
-            return View(produtos);
+        public RoupasController(IProdutoService produtoService)
+        {
+            _produtoService = produtoService;
         }
 
-        public IActionResult ListarRoupasInfantis()
+        public async Task<IActionResult> Novidades()
         {
-            var produtos = new List<ProdutoDto>() {
-                new ProdutoDto { Nome = "Camiseta Colorida",  ImagemPrincipalUrl = "/images/modelo.jfif"  },
-                new ProdutoDto { Nome = "Calça Jogger",       ImagemPrincipalUrl = "/images/modelo2.jpg"  },
-                new ProdutoDto { Nome = "Vestido Floral",     ImagemPrincipalUrl = "/images/modelo.jfif"  },
-                new ProdutoDto { Nome = "Moletom Estampado",  ImagemPrincipalUrl = "/images/modelo2.jpg"  },
-                new ProdutoDto { Nome = "Short Esportivo",    ImagemPrincipalUrl = "/images/modelo.jfif"  },
-                new ProdutoDto { Nome = "Blusa de Frio",      ImagemPrincipalUrl = "/images/modelo2.jpg"  },
-                new ProdutoDto { Nome = "Conjunto Listrado",  ImagemPrincipalUrl = "/images/modelo.jfif"  },
-            };
-
-            return View(produtos);
+            var produtos = await _produtoService.ObterTodosComImagensAsync();
+            return View(MapearDtos(produtos));
         }
 
-        public IActionResult ListarRoupasMasculinas()
+        public async Task<IActionResult> ListarRoupasInfantis()
         {
-            var produtos = new List<ProdutoDto>() {
-                new ProdutoDto { Nome = "Camisa Social", ImagemPrincipalUrl = "/images/modelo.jfif" },
-                new ProdutoDto { Nome = "Calça Slim", ImagemPrincipalUrl = "/images/modelo2.jpg" },
-                new ProdutoDto { Nome = "Polo Clássica", ImagemPrincipalUrl = "/images/modelo.jfif" },
-                new ProdutoDto { Nome = "Camiseta Básica", ImagemPrincipalUrl = "/images/modelo.jfif" },
-                new ProdutoDto { Nome = "Bermuda Linen", ImagemPrincipalUrl = "/images/modelo2.jpg" },
-                new ProdutoDto { Nome = "Jaqueta Leve", ImagemPrincipalUrl = "/images/modelo.jfif" },
-                new ProdutoDto { Nome = "Short Casual", ImagemPrincipalUrl = "/images/modelo2.jpg" },
-            };
-
-            return View(produtos);
+            var produtos = await _produtoService.ObterInfantisComImagensAsync();
+            return View(MapearDtos(produtos));
         }
 
-        public IActionResult ListarRoupasFemininas()
+        public async Task<IActionResult> ListarRoupasMasculinas()
         {
-            var produtosMaisVendidosDtos = new List<ProdutoDto>() {
-                new ProdutoDto {Nome = "Camisa1", ImagemPrincipalUrl = "/images/modelo.jfif" },
-                new ProdutoDto {Nome = "Camisa2", ImagemPrincipalUrl = "/images/modelo2.jpg" },
-                new ProdutoDto {Nome = "Camisa1", ImagemPrincipalUrl = "/images/modelo.jfif" },
-                new ProdutoDto {Nome = "Camisa1", ImagemPrincipalUrl = "/images/modelo.jfif" },
-                new ProdutoDto {Nome = "Camisa1", ImagemPrincipalUrl = "/images/modelo.jfif" },
-                new ProdutoDto {Nome = "Camisa1", ImagemPrincipalUrl = "/images/modelo.jfif" },
-                new ProdutoDto {Nome = "Camisa1", ImagemPrincipalUrl = "/images/modelo.jfif" },
-            };
-
-            return View(produtosMaisVendidosDtos);
+            var produtos = await _produtoService.ObterPorGeneroComImagensAsync(Genero.Masculino);
+            return View(MapearDtos(produtos));
         }
+
+        public async Task<IActionResult> ListarRoupasFemininas()
+        {
+            var produtos = await _produtoService.ObterPorGeneroComImagensAsync(Genero.Feminino);
+            return View(MapearDtos(produtos));
+        }
+
+        private static List<ProdutoDto> MapearDtos(IEnumerable<Produto> produtos)
+            => produtos.Select(p => new ProdutoDto
+            {
+                Nome = p.Nome,
+                Preco = p.Preco,
+                Descricao = p.Descricao,
+                ImagemPrincipalUrl = p.Imagens.FirstOrDefault(i => i.Principal)?.ImagemUrl
+                    ?? p.Imagens.FirstOrDefault()?.ImagemUrl
+                    ?? string.Empty
+            }).ToList();
     }
 }

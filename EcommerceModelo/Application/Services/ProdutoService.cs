@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Domain.Enums;
 using Domain.Interfaces;
 using Domain.Models;
 
@@ -22,6 +23,12 @@ public class ProdutoService : BaseService<Produto>, IProdutoService
 
     public Task<IEnumerable<Produto>> ObterTodosComImagensAsync()
         => _produtoRepository.ObterTodosComImagensAsync();
+
+    public Task<IEnumerable<Produto>> ObterPorGeneroComImagensAsync(Genero genero)
+        => _produtoRepository.ObterPorGeneroComImagensAsync(genero);
+
+    public Task<IEnumerable<Produto>> ObterInfantisComImagensAsync()
+        => _produtoRepository.ObterInfantisComImagensAsync();
 
     public async Task CadastrarComEstoqueAsync(
         Produto produto,

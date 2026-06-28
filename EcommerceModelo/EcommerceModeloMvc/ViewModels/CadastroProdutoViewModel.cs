@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Domain.Enums;
 
 namespace EcommerceModeloMvc.ViewModels;
 
@@ -19,6 +20,11 @@ public class CadastroProdutoViewModel
 
     [Required(ErrorMessage = "A categoria é obrigatória")]
     public int CategoriaId { get; set; }
+
+    [Required(ErrorMessage = "O gênero é obrigatório.")]
+    public Genero Genero { get; set; }
+
+    public bool EhInfantil { get; set; }
 
     public List<IFormFile> Imagens { get; set; } = new();
 
