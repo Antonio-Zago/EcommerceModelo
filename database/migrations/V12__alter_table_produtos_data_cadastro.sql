@@ -1,0 +1,2 @@
+ALTER TABLE produtos
+    ADD COLUMN data_cadastro TIMESTAMP NOT NULL DEFAULT NOW();

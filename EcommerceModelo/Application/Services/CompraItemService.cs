@@ -6,5 +6,13 @@ namespace Application.Services;
 
 public class CompraItemService : BaseService<CompraItem>, ICompraItemService
 {
-    public CompraItemService(ICompraItemRepository repository) : base(repository) { }
+    private readonly ICompraItemRepository _compraItemRepository;
+
+    public CompraItemService(ICompraItemRepository repository) : base(repository)
+    {
+        _compraItemRepository = repository;
+    }
+
+    public Task<IEnumerable<int>> ObterIdsProdutosMaisVendidosAsync()
+        => _compraItemRepository.ObterIdsProdutosMaisVendidosAsync();
 }

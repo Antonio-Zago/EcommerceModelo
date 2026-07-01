@@ -41,6 +41,7 @@ public class ProdutoService : BaseService<Produto>, IProdutoService
         string pastaFisica)
     {
         // 1. Persiste o produto
+        produto.DataCadastro = DateTime.UtcNow;
         await _produtoRepository.AdicionarAsync(produto);
 
         // 2. Salva os arquivos de imagem e vincula ao produto

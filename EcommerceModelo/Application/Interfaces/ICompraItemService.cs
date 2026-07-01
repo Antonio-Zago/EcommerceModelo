@@ -4,4 +4,5 @@ namespace Application.Interfaces;
 
 public interface ICompraItemService : IBaseService<CompraItem>
 {
+    Task<IEnumerable<int>> ObterIdsProdutosMaisVendidosAsync();
 }

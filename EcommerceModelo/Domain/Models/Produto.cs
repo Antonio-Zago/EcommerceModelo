@@ -27,6 +27,9 @@ public class Produto
     [Column("eh_infantil")]
     public bool EhInfantil { get; set; }
 
+    [Column("data_cadastro")]
+    public DateTime DataCadastro { get; set; }
+
     public ICollection<ProdutoImagem> Imagens { get; set; } = new List<ProdutoImagem>();
 
     public ICollection<ProdutoEstoque> Estoques { get; set; } = new List<ProdutoEstoque>();
