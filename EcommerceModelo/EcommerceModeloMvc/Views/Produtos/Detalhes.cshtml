@@ -1,0 +1,130 @@
+@model DetalhesProdutoViewModel
+
+@{
+    ViewData["Title"] = Model.Nome;
+    var imagemPrincipal = Model.Imagens.FirstOrDefault(i => i.Principal) ?? Model.Imagens.FirstOrDefault();
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new(Model.Categoria, "#"),
+        new(Model.Nome)
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/detalhesProduto.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<div class="produto-detalhes">
+
+    @* ── Galeria ── *@
+    <div class="galeria">
+        @if (Model.Imagens.Count > 1)
+        {
+            <div class="galeria-miniaturas">
+                @foreach (var (img, idx) in Model.Imagens.Select((x, i) => (x, i)))
+                {
+                    <div class="miniatura @(img.Principal ? "ativa" : "")"
+                         data-url="@img.Url"
+                         onclick="trocarImagem(this)">
+                        <img src="@img.Url" alt="@Model.Nome foto @(idx + 1)" />
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="galeria-principal">
+            <img id="imgPrincipal"
+                 src="@(imagemPrincipal?.Url ?? "")"
+                 alt="@Model.Nome" />
+        </div>
+    </div>
+
+    @* ── Informações ── *@
+    <div class="produto-info">
+
+        <div>
+            <div class="produto-categoria">@Model.Categoria</div>
+            <h1 class="produto-nome">@Model.Nome</h1>
+        </div>
+
+        <div class="produto-preco">R$ @Model.Preco.ToString("N2")</div>
+
+        <div class="produto-badges">
+            <span class="badge-genero">@Model.Genero</span>
+            @if (Model.EhInfantil)
+            {
+                <span class="badge-infantil">Infantil</span>
+            }
+        </div>
+
+        @* ── Tamanhos ── *@
+        @if (Model.Estoques.Any())
+        {
+            <div>
+                <div class="tamanhos-label">Tamanho</div>
+                <div class="tamanhos-grid">
+                    @foreach (var estoque in Model.Estoques)
+                    {
+                        <button type="button"
+                                class="btn-tamanho"
+                                data-tamanho-id="@estoque.TamanhoId"
+                                data-qtd="@estoque.Quantidade"
+                                onclick="selecionarTamanho(this)">
+                            @estoque.Tamanho
+                        </button>
+                    }
+                </div>
+                <div class="tamanho-aviso" id="avisoTamanho"></div>
+            </div>
+        }
+
+        @* ── Adicionar ao carrinho ── *@
+        <form asp-controller="Carrinho" asp-action="Adicionar" method="post" id="formCarrinho">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="produtoId" value="@Model.Id" />
+            <input type="hidden" name="tamanhoId" id="tamanhoSelecionado" value="" />
+
+            <div class="produto-acoes">
+                <button type="submit" class="btn-adicionar-carrinho" id="btnAdicionarCarrinho" disabled>
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+        </form>
+
+        @* ── Descrição ── *@
+        <div>
+            <div class="produto-descricao-titulo">Descrição</div>
+            <p class="produto-descricao-texto">@Model.Descricao</p>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function trocarImagem(el) {
+        document.getElementById('imgPrincipal').src = el.dataset.url;
+        document.querySelectorAll('.miniatura').forEach(m => m.classList.remove('ativa'));
+        el.classList.add('ativa');
+    }
+
+    function selecionarTamanho(btn) {
+        document.querySelectorAll('.btn-tamanho').forEach(b => b.classList.remove('selecionado'));
+        btn.classList.add('selecionado');
+        document.getElementById('tamanhoSelecionado').value = btn.dataset.tamanhoId;
+        document.getElementById('btnAdicionarCarrinho').disabled = false;
+        document.getElementById('avisoTamanho').textContent = '';
+    }
+
+    document.getElementById('formCarrinho').addEventListener('submit', function (e) {
+        if (!document.getElementById('tamanhoSelecionado').value) {
+            e.preventDefault();
+            document.getElementById('avisoTamanho').textContent = 'Selecione um tamanho antes de continuar.';
+        }
+    });
+</script>
+}

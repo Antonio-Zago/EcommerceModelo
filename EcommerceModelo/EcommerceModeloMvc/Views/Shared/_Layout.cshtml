@@ -35,23 +35,24 @@
                         <li class="nav-item">
                             <a class="nav-link-custom" asp-area="" asp-controller="Roupas" asp-action="ListarRoupasInfantis">Infantil</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link-custom" asp-area="" asp-controller="Produtos" asp-action="Cadastrar">Cadastrar Produto</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link-custom" asp-area="" asp-controller="Produtos" asp-action="ImportarViaExcel">Importar Excel</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link-custom" asp-area="" asp-controller="Importacoes" asp-action="Index">Importações</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link-custom" asp-area="" asp-controller="Tamanhos" asp-action="Cadastrar">Tamanhos</a>
-                        </li>
-                        @if (User.IsInRole("Admin"))
+                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link-custom" asp-area="" asp-controller="GestaoUsuarios" asp-action="Index">Usuários</a>
+                                <a class="nav-link-custom" asp-area="" asp-controller="Produtos" asp-action="Cadastrar">Cadastrar Produto</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link-custom" asp-area="" asp-controller="Produtos" asp-action="ImportarViaExcel">Importar Excel</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link-custom" asp-area="" asp-controller="Importacoes" asp-action="Index">Importações</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link-custom" asp-area="" asp-controller="Tamanhos" asp-action="Cadastrar">Tamanhos</a>
+                            </li>
+                       
+                                <li class="nav-item">
+                                    <a class="nav-link-custom" asp-area="" asp-controller="GestaoUsuarios" asp-action="Index">Usuários</a>
+                                </li>
                         }
                     </ul>
 

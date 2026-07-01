@@ -8,4 +8,5 @@ public interface IProdutoRepository : IBaseRepository<Produto>
     Task<IEnumerable<Produto>> ObterTodosComImagensAsync();
     Task<IEnumerable<Produto>> ObterPorGeneroComImagensAsync(Genero genero);
     Task<IEnumerable<Produto>> ObterInfantisComImagensAsync();
+    Task<Produto?> ObterPorIdComDetalhesAsync(int id);
 }

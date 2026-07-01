@@ -33,6 +33,7 @@ public class HomeService : IHomeService
 
             var produtoDto = new ProdutoDto
             {
+                Id = p.Id,
                 Nome = p.Nome,
                 Preco = p.Preco,
                 Descricao = p.Descricao,

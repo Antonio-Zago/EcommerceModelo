@@ -112,6 +112,43 @@ public class ProdutosController : Controller
         }
     }
 
+    // ── Detalhes do produto ──────────────────────────────────────────────────
+
+    [AllowAnonymous]
+    public async Task<IActionResult> Detalhes(int produtoId)
+    {
+        var produto = await _produtoService.ObterPorIdComDetalhesAsync(produtoId);
+        if (produto is null)
+            return NotFound();
+
+        var viewModel = new DetalhesProdutoViewModel
+        {
+            Id          = produto.Id,
+            Nome        = produto.Nome,
+            Preco       = produto.Preco,
+            Descricao   = produto.Descricao,
+            Categoria   = produto.Categoria?.Nome ?? string.Empty,
+            Genero      = produto.Genero.ToString(),
+            EhInfantil  = produto.EhInfantil,
+            Imagens     = produto.Imagens
+                            .OrderByDescending(i => i.Principal)
+                            .Select(i => new ImagemViewModel { Url = i.ImagemUrl, Principal = i.Principal })
+                            .ToList(),
+            Estoques    = produto.Estoques
+                            .Where(e => e.Quantidade > 0)
+                            .OrderBy(e => e.Tamanho?.Descricao)
+                            .Select(e => new EstoqueViewModel
+                            {
+                                TamanhoId  = e.TamanhoId ?? 0,
+                                Tamanho    = e.Tamanho?.Descricao ?? string.Empty,
+                                Quantidade = e.Quantidade
+                            })
+                            .ToList()
+        };
+
+        return View(viewModel);
+    }
+
     // ── Importar via Excel ───────────────────────────────────────────────────
 
     public IActionResult ImportarViaExcel() => View(new ImportarProdutosViewModel());

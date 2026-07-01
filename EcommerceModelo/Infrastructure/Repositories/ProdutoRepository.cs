@@ -24,4 +24,11 @@ public class ProdutoRepository : BaseRepository<Produto>, IProdutoRepository
             .Where(p => p.EhInfantil)
             .Include(p => p.Imagens)
             .ToListAsync();
+
+    public async Task<Produto?> ObterPorIdComDetalhesAsync(int id)
+        => await _dbSet
+            .Include(p => p.Imagens)
+            .Include(p => p.Estoques).ThenInclude(e => e.Tamanho)
+            .Include(p => p.Categoria)
+            .FirstOrDefaultAsync(p => p.Id == id);
 }

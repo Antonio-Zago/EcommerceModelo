@@ -30,6 +30,9 @@ public class ProdutoService : BaseService<Produto>, IProdutoService
     public Task<IEnumerable<Produto>> ObterInfantisComImagensAsync()
         => _produtoRepository.ObterInfantisComImagensAsync();
 
+    public Task<Produto?> ObterPorIdComDetalhesAsync(int id)
+        => _produtoRepository.ObterPorIdComDetalhesAsync(id);
+
     public async Task CadastrarComEstoqueAsync(
         Produto produto,
         List<(int tamanhoId, int quantidade)> estoques,

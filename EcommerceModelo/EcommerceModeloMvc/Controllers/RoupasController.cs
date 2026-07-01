@@ -1,5 +1,6 @@
 using Application.Dtos.HomePage;
 using Application.Interfaces;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Domain.Enums;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +43,7 @@ namespace EcommerceModeloMvc.Controllers
         private static List<ProdutoDto> MapearDtos(IEnumerable<Produto> produtos)
             => produtos.Select(p => new ProdutoDto
             {
+                Id = p.Id,
                 Nome = p.Nome,
                 Preco = p.Preco,
                 Descricao = p.Descricao,
