@@ -1,0 +1,87 @@
+@{
+    ViewData["Title"] = "Administração";
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new("Administração")
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/administracao.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<h1 class="mb-4">Administração</h1>
+
+<div class="admin-menu-grid">
+    <a class="admin-menu-card" asp-controller="Produtos" asp-action="Cadastrar">
+        <div class="admin-menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14"></path>
+            </svg>
+        </div>
+        <div>
+            <div class="admin-menu-title">Cadastrar Produto</div>
+            <p class="admin-menu-description">Adicionar um novo produto ao catálogo.</p>
+        </div>
+    </a>
+
+    <a class="admin-menu-card" asp-controller="Produtos" asp-action="ImportarViaExcel">
+        <div class="admin-menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12"></path>
+                <path d="m7 10 5 5 5-5"></path>
+                <path d="M5 21h14"></path>
+            </svg>
+        </div>
+        <div>
+            <div class="admin-menu-title">Importar Excel</div>
+            <p class="admin-menu-description">Cadastrar produtos em lote via planilha.</p>
+        </div>
+    </a>
+
+    <a class="admin-menu-card" asp-controller="Importacoes" asp-action="Index">
+        <div class="admin-menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4v6h6"></path>
+                <path d="M20 20v-6h-6"></path>
+                <path d="M4 10a8 8 0 0 1 14.6-4.6M20 14a8 8 0 0 1-14.6 4.6"></path>
+            </svg>
+        </div>
+        <div>
+            <div class="admin-menu-title">Importações</div>
+            <p class="admin-menu-description">Acompanhar o status das importações realizadas.</p>
+        </div>
+    </a>
+
+    <a class="admin-menu-card" asp-controller="Tamanhos" asp-action="Cadastrar">
+        <div class="admin-menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <path d="M9 3v18M15 3v18M3 9h18M3 15h18"></path>
+            </svg>
+        </div>
+        <div>
+            <div class="admin-menu-title">Tamanhos</div>
+            <p class="admin-menu-description">Gerenciar tipos e opções de tamanho.</p>
+        </div>
+    </a>
+
+    <a class="admin-menu-card" asp-controller="GestaoUsuarios" asp-action="Index">
+        <div class="admin-menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+        </div>
+        <div>
+            <div class="admin-menu-title">Usuários</div>
+            <p class="admin-menu-description">Gerenciar usuários e papéis de acesso.</p>
+        </div>
+    </a>
+</div>
