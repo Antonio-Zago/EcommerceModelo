@@ -71,6 +71,7 @@
                     {
                         <button type="button"
                                 class="btn-tamanho"
+                                data-tamanho-nome="@estoque.Nome"
                                 data-tamanho-id="@estoque.TamanhoId"
                                 data-qtd="@estoque.Quantidade"
                                 onclick="selecionarTamanho(this)">
@@ -87,6 +88,10 @@
             @Html.AntiForgeryToken()
             <input type="hidden" name="produtoId" value="@Model.Id" />
             <input type="hidden" name="tamanhoId" id="tamanhoSelecionado" value="" />
+            <input type="hidden" name="nome" value="@Model.Nome" />
+            <input type="hidden" name="preco" value="@Model.Preco" />
+            <input type="hidden" name="imagemUrl" value="@(Model.Imagens.FirstOrDefault(a => a.Principal)?.Url ?? string.Empty)" />
+            <input type="hidden" name="tamanhoNome" id="tamanhoSelecionadoNome" value="" />
 
             <div class="produto-acoes">
                 <button type="submit" class="btn-adicionar-carrinho" id="btnAdicionarCarrinho" disabled>
@@ -116,6 +121,7 @@
         document.querySelectorAll('.btn-tamanho').forEach(b => b.classList.remove('selecionado'));
         btn.classList.add('selecionado');
         document.getElementById('tamanhoSelecionado').value = btn.dataset.tamanhoId;
+        document.getElementById('tamanhoSelecionadoNome').value = btn.dataset.tamanhoNome;
         document.getElementById('btnAdicionarCarrinho').disabled = false;
         document.getElementById('avisoTamanho').textContent = '';
     }

@@ -24,4 +24,6 @@ public class EstoqueViewModel
     public int TamanhoId { get; init; }
     public string Tamanho { get; init; } = string.Empty;
     public int Quantidade { get; init; }
+
+    public string Nome { get; init; }
 }

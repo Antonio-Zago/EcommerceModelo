@@ -1,0 +1,93 @@
+@model IEnumerable<Domain.Models.Compra>
+@{
+    ViewData["Title"] = "Meus Pedidos";
+
+    string FormaPagamentoLabel(string forma) => forma switch
+    {
+        "pix"            => "Pix",
+        "boleto"         => "Boleto bancário",
+        "cartao_credito" => "Cartão de crédito",
+        _                => forma
+    };
+
+    string StatusLabel(string status) => status switch
+    {
+        "confirmado"  => "Confirmado",
+        "enviado"     => "Enviado",
+        "entregue"    => "Entregue",
+        "cancelado"   => "Cancelado",
+        _             => status
+    };
+
+    string StatusClass(string status) => status switch
+    {
+        "confirmado" => "badge-confirmado",
+        "enviado"    => "badge-enviado",
+        "entregue"   => "badge-entregue",
+        "cancelado"  => "badge-cancelado",
+        _            => ""
+    };
+}
+
+<link rel="stylesheet" href="~/css/pedidos.css" asp-append-version="true" />
+
+<div class="pedidos-page">
+    <h2 class="pedidos-titulo">Meus Pedidos</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="pedidos-vazio">
+            <p>Você ainda não realizou nenhum pedido.</p>
+            <a href="/" class="btn-continuar-comprando">Explorar produtos</a>
+        </div>
+    }
+    else
+    {
+        <div class="pedidos-lista">
+            @foreach (var pedido in Model)
+            {
+                <div class="pedido-card">
+                    <div class="pedido-card-header">
+                        <div>
+                            <span class="pedido-numero">Pedido #@pedido.Id</span>
+                            <span class="pedido-data">@pedido.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="pedido-badge @StatusClass(pedido.Status)">@StatusLabel(pedido.Status)</span>
+                            <span class="pedido-total">R$ @pedido.Total.ToString("N2")</span>
+                        </div>
+                    </div>
+
+                    <div class="pedido-card-body">
+                        <table class="tabela-itens">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th class="text-center">Qtd</th>
+                                    <th class="text-end">Preço unit.</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in pedido.Itens)
+                                {
+                                    <tr>
+                                        <td>@item.NomeProduto</td>
+                                        <td class="text-center">@item.Quantidade</td>
+                                        <td class="text-end">R$ @item.PrecoUnitario.ToString("N2")</td>
+                                        <td class="text-end">R$ @((item.PrecoUnitario * item.Quantidade).ToString("N2"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <div class="pedido-card-footer">
+                            <span class="text-muted small">@FormaPagamentoLabel(pedido.FormaPagamento)</span>
+                            <span class="text-muted small">Entrega prevista: <strong>@pedido.EntregaPrevista.ToString("dd/MM/yyyy")</strong></span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

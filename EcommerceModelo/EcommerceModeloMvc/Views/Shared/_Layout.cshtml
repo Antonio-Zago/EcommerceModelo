@@ -86,6 +86,10 @@
                                     <li><span class="dropdown-item-text small text-muted">@User.Identity.Name</span></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
+                                        <a class="dropdown-item" asp-controller="Pedidos" asp-action="Index">Meus Pedidos</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
                                         <form asp-controller="Autenticacao" asp-action="Logout" method="post">
                                             @Html.AntiForgeryToken()
                                             <button type="submit" class="dropdown-item">Sair</button>

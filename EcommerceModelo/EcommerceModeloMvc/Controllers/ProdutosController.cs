@@ -141,7 +141,8 @@ public class ProdutosController : Controller
                             {
                                 TamanhoId  = e.TamanhoId ?? 0,
                                 Tamanho    = e.Tamanho?.Descricao ?? string.Empty,
-                                Quantidade = e.Quantidade
+                                Quantidade = e.Quantidade,
+                                Nome = e.Tamanho!.Descricao
                             })
                             .ToList()
         };

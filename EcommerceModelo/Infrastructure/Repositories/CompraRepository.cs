@@ -13,4 +13,11 @@ public class CompraRepository : BaseRepository<Compra>, ICompraRepository
         => await _context.Compras
             .Include(c => c.Itens)
             .FirstOrDefaultAsync(c => c.Id == id);
+
+    public async Task<IEnumerable<Compra>> ObterPorUsuarioAsync(int usuarioId)
+        => await _context.Compras
+            .Include(c => c.Itens)
+            .Where(c => c.UsuarioId == usuarioId)
+            .OrderByDescending(c => c.CriadoEm)
+            .ToListAsync();
 }

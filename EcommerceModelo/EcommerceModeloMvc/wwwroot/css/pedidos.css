@@ -1,0 +1,129 @@
+.pedidos-page {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.pedidos-titulo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.75rem;
+}
+
+.pedidos-vazio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 3rem 0;
+    color: #888;
+}
+
+.pedidos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ── Card de pedido ── */
+.pedido-card {
+    border: 1px solid #eee;
+}
+
+.pedido-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid #eee;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.pedido-numero {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-right: 0.75rem;
+}
+
+.pedido-data {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.pedido-total {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.pedido-card-body {
+    padding: 1.25rem;
+}
+
+.pedido-card-footer {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* ── Tabela de itens (reutiliza estilo do checkout) ── */
+.tabela-itens {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.tabela-itens th {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #888;
+    padding: 0 0 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+.tabela-itens td {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tabela-itens tfoot td {
+    border-top: 1px solid #ddd;
+    border-bottom: none;
+    padding-top: 0.75rem;
+}
+
+/* ── Status badges ── */
+.pedido-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.25rem 0.65rem;
+    text-transform: uppercase;
+}
+
+.badge-confirmado { background: #e8f4ea; color: #2d6a3f; }
+.badge-enviado    { background: #e8f0fb; color: #1a4fa0; }
+.badge-entregue   { background: #f0f0f0; color: #444;    }
+.badge-cancelado  { background: #fdecea; color: #a02020; }
+
+/* ── Botão continuar comprando ── */
+.btn-continuar-comprando {
+    display: inline-block;
+    padding: 0.7rem 2rem;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+}
+
+.btn-continuar-comprando:hover {
+    background: #333;
+    color: #fff;
+}
