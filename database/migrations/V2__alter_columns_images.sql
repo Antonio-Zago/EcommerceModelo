@@ -7,7 +7,7 @@ ADD imagemUrl VARCHAR(500);
 ALTER TABLE categorias
 ADD imagemUrl VARCHAR(500);
 
-drop table compras_imagens
+drop table compras_imagens;
 
 
 CREATE TABLE compras_itens (
