@@ -1,0 +1,203 @@
+@model EcommerceModeloMvc.ViewModels.EditarProdutoViewModel
+@using Domain.Models
+@using Domain.Enums
+
+@{
+    ViewData["Title"] = "Editar Produto";
+    var categorias = ViewBag.Categorias as IEnumerable<Categoria> ?? Enumerable.Empty<Categoria>();
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new("Administração", "/Administracao"),
+        new("Produtos", "/Produtos/Listar"),
+        new("Editar produto")
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cadastroProduto.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<div class="row justify-content-center">
+
+<h1 class="mb-4">Editar produto</h1>
+<div class="col-12 col-xl-9 col-xxl-8">
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Sucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewData.ModelState[string.Empty]!.Errors.FirstOrDefault()?.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (Model.JaVendido)
+{
+    <div class="alert alert-warning" role="alert">
+        Este produto já foi vendido e não pode ser editado.
+        @if (Model.Status == StatusProduto.Ativo)
+        {
+            <span>Só é possível arquivá-lo.</span>
+        }
+        else
+        {
+            <span>Ele já está arquivado.</span>
+        }
+    </div>
+}
+
+<form asp-action="Editar" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <fieldset disabled="@Model.JaVendido" style="border:0; padding:0; margin:0; min-width:0;">
+
+    @* ── Dados do Produto ── *@
+    <div class="form-section-card">
+        <div class="form-section-title">Dados do Produto</div>
+        <div class="row g-3">
+
+            <div class="col-12 col-md-8">
+                <label asp-for="Nome" class="form-label">Nome <span class="text-danger">*</span></label>
+                <input asp-for="Nome" class="form-control" maxlength="200" />
+                <span asp-validation-for="Nome" class="text-danger small"></span>
+            </div>
+
+            <div class="col-6 col-md-2">
+                <label asp-for="Preco" class="form-label">Preço (R$) <span class="text-danger">*</span></label>
+                <input asp-for="Preco" class="form-control" type="number" step="0.01" min="0.01" />
+                <span asp-validation-for="Preco" class="text-danger small"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Descricao" class="form-label">Descrição <span class="text-danger">*</span></label>
+                <textarea asp-for="Descricao" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Descricao" class="text-danger small"></span>
+            </div>
+
+            <div class="col-12 col-md-5">
+                <label asp-for="CategoriaId" class="form-label">Categoria <span class="text-danger">*</span></label>
+                <select asp-for="CategoriaId" class="form-select">
+                    <option value="">— Selecione —</option>
+                    @foreach (var cat in categorias)
+                    {
+                        <option value="@cat.Id" selected="@(Model.CategoriaId == cat.Id)">@cat.Nome</option>
+                    }
+                </select>
+                <span asp-validation-for="CategoriaId" class="text-danger small"></span>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <label asp-for="Genero" class="form-label">Gênero <span class="text-danger">*</span></label>
+                <select asp-for="Genero" class="form-select">
+                    <option value="@((int)Genero.Masculino)" selected="@(Model.Genero == Genero.Masculino)">Masculino</option>
+                    <option value="@((int)Genero.Feminino)" selected="@(Model.Genero == Genero.Feminino)">Feminino</option>
+                </select>
+                <span asp-validation-for="Genero" class="text-danger small"></span>
+            </div>
+
+            <div class="col-12 col-md-3 d-flex align-items-end pb-1">
+                <div class="form-check">
+                    <input asp-for="EhInfantil" class="form-check-input" type="checkbox" />
+                    <label asp-for="EhInfantil" class="form-check-label">Produto infantil</label>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <label asp-for="Status" class="form-label">Status</label>
+                <select asp-for="Status" class="form-select">
+                    <option value="@((int)StatusProduto.Ativo)" selected="@(Model.Status == StatusProduto.Ativo)">Ativo</option>
+                    <option value="@((int)StatusProduto.Arquivado)" selected="@(Model.Status == StatusProduto.Arquivado)">Arquivado</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    @* ── Estoque por tamanho ── *@
+    <div class="form-section-card">
+        <div class="form-section-title">Estoque por Tamanho</div>
+
+        @if (Model.Estoques.Count == 0)
+        {
+            <p class="text-muted small mb-0">Este produto não possui estoque cadastrado.</p>
+        }
+        else
+        {
+            <div class="row g-3">
+                @for (var i = 0; i < Model.Estoques.Count; i++)
+                {
+                    <div class="col-6 col-md-3">
+                        <input type="hidden" asp-for="Estoques[i].Id" />
+                        <input type="hidden" asp-for="Estoques[i].Tamanho" />
+                        <label asp-for="Estoques[i].Quantidade" class="form-label">Tamanho @Model.Estoques[i].Tamanho</label>
+                        <input asp-for="Estoques[i].Quantidade" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="Estoques[i].Quantidade" class="text-danger small"></span>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    @* ── Imagens ── *@
+    <div class="form-section-card">
+        <div class="form-section-title">Imagem Principal</div>
+
+        @if (Model.Imagens.Count == 0)
+        {
+            <p class="text-muted small mb-0">Este produto não possui imagens.</p>
+        }
+        else
+        {
+            <div class="d-flex flex-wrap gap-3">
+                @foreach (var imagem in Model.Imagens)
+                {
+                    <label class="text-center" style="cursor:pointer;">
+                        <img src="@imagem.Url" alt="Imagem do produto" style="width:120px; height:150px; object-fit:cover; display:block; background:#f5f5f5;" />
+                        <input type="radio" name="ImagemPrincipalId" value="@imagem.Id"
+                               checked="@(Model.ImagemPrincipalId == imagem.Id)" class="form-check-input mt-2" />
+                        <span class="small d-block">Principal</span>
+                    </label>
+                }
+            </div>
+        }
+    </div>
+
+    </fieldset>
+
+    @* ── Ações ── *@
+    <div class="d-flex justify-content-between mt-2 mb-3">
+        <a asp-action="Listar" class="btn btn-outline-secondary px-4">Voltar</a>
+        @if (!Model.JaVendido)
+        {
+            <button type="submit" class="btn btn-primary px-5">Salvar alterações</button>
+        }
+    </div>
+</form>
+
+@if (Model.JaVendido && Model.Status == StatusProduto.Ativo)
+{
+    <form asp-action="Arquivar" asp-route-id="@Model.Id" method="post" class="mb-5"
+          onsubmit="return confirm('Arquivar este produto? Ele deixará de aparecer na loja.');">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-danger px-5">Arquivar produto</button>
+    </form>
+}
+
+</div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

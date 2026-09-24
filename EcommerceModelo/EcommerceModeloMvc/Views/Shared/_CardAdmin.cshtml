@@ -1,0 +1,38 @@
+@model Application.Dtos.Admin.ProdutoAdminDto
+
+<link rel="stylesheet" href="~/css/card.css" asp-append-version="true" />
+
+<div class="card-component">
+    <div class="card">
+        <div class="card-img-wrapper">
+            <a href="/Produtos/Editar?id=@Model.Id">
+                <img src="@Model.ImagemPrincipalUrl" alt="@Model.Nome" />
+            </a>
+            @if (Model.EstoqueTotal <= 0)
+            {
+                <span class="badge-estoque badge-estoque-zerado">Sem estoque</span>
+            }
+            else
+            {
+                <span class="badge-estoque">@Model.EstoqueTotal em estoque</span>
+            }
+            @if (Model.Arquivado)
+            {
+                <span class="badge-status-arquivado">Arquivado</span>
+            }
+            <div class="card-overlay">
+                <a href="/Produtos/Editar?id=@Model.Id" class="btn-comprar">Editar produto</a>
+                <form action="/Produtos/Duplicar/@Model.Id" method="post" class="mt-1"
+                      onsubmit="return confirm('Duplicar este produto (estoque e imagens inclusos)?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-comprar btn-duplicar">Duplicar produto</button>
+                </form>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card-title">@Model.Nome</div>
+            <div class="card-desc">@Model.Categoria · @Model.Genero@(Model.EhInfantil ? " · Infantil" : "")</div>
+            <div class="card-price">@Model.Preco.ToString("C")</div>
+        </div>
+    </div>
+</div>

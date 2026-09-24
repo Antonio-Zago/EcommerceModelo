@@ -1,0 +1,134 @@
+@using Application.Dtos.Admin
+@using EcommerceModeloMvc.ViewModels
+@model IEnumerable<ProdutoAdminDto>
+
+@{
+    ViewData["Title"] = "Produtos";
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        new("Início", "/"),
+        new("Administração", "/Administracao"),
+        new("Produtos")
+    };
+
+    var filters = new List<FilterGroupViewModel>
+    {
+        new()
+        {
+            Label = "Gênero",
+            Type  = FilterType.Checkbox,
+            Options =
+            [
+                new() { Id = "masculino", Label = "Masculino" },
+                new() { Id = "feminino",  Label = "Feminino"  },
+            ]
+        },
+        new()
+        {
+            Label = "Infantil",
+            Type  = FilterType.Checkbox,
+            Options =
+            [
+                new() { Id = "infantil-sim", Label = "Sim" },
+                new() { Id = "infantil-nao", Label = "Não" },
+            ]
+        },
+        new()
+        {
+            Label = "Status",
+            Type  = FilterType.Checkbox,
+            Options =
+            [
+                new() { Id = "status-ativo",     Label = "Ativo"     },
+                new() { Id = "status-arquivado", Label = "Arquivado" },
+            ]
+        },
+        new()
+        {
+            Label = "Categoria",
+            Type  = FilterType.Checkbox,
+            Options =
+            [
+                new() { Id = "camisas",   Label = "Camisas"   },
+                new() { Id = "calcas",    Label = "Calças"    },
+                new() { Id = "bermudas",  Label = "Bermudas"  },
+                new() { Id = "camisetas", Label = "Camisetas" },
+                new() { Id = "polos",     Label = "Polos"     },
+                new() { Id = "shorts",    Label = "Shorts"    },
+            ]
+        },
+        new()
+        {
+            Label = "Cor",
+            Type  = FilterType.Checkbox,
+            Options =
+            [
+                new() { Id = "preto",  Label = "Preto"  },
+                new() { Id = "branco", Label = "Branco" },
+            ]
+        },
+        new()
+        {
+            Label = "Marca",
+            Type  = FilterType.Checkbox,
+            Options =
+            [
+                new() { Id = "nike",   Label = "Nike"   },
+                new() { Id = "adidas", Label = "Adidas" },
+            ]
+        },
+        new()
+        {
+            Label = "Preço",
+            Type  = FilterType.Range,
+            Range = new() { Min = 0, Max = 1000, Step = 10, Value = 500 }
+        },
+    };
+}
+
+<link rel="stylesheet" href="~/css/listarRoupas.css" asp-append-version="true" />
+
+@await Html.PartialAsync("_Breadcrumb", breadcrumb)
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="mb-0">Produtos</h1>
+    <a asp-controller="Produtos" asp-action="Cadastrar" class="btn-comprar" style="width:auto; padding:10px 20px;">
+        Cadastrar Produto
+    </a>
+</div>
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Sucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@await Html.PartialAsync("_FilterBar", filters)
+
+<div class="page-divider mb-4"></div>
+
+<!-- Grade de produtos -->
+<div class="row g-3">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var produto in Model)
+        {
+            <div class="col-6 col-md-4 col-lg-3">
+                @await Html.PartialAsync("_CardAdmin", produto)
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center py-5">
+            <p class="empty-state-text">Nenhum produto cadastrado.</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/filtrosProdutosAdmin.js" asp-append-version="true"></script>
+}

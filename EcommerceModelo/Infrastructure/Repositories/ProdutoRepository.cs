@@ -11,17 +11,20 @@ public class ProdutoRepository : BaseRepository<Produto>, IProdutoRepository
     public ProdutoRepository(AppDbContext context) : base(context) { }
 
     public async Task<IEnumerable<Produto>> ObterTodosComImagensAsync()
-        => await _dbSet.Include(p => p.Imagens).ToListAsync();
+        => await _dbSet
+            .Where(p => p.Status == StatusProduto.Ativo)
+            .Include(p => p.Imagens)
+            .ToListAsync();
 
     public async Task<IEnumerable<Produto>> ObterPorGeneroComImagensAsync(Genero genero)
         => await _dbSet
-            .Where(p => p.Genero == genero && !p.EhInfantil)
+            .Where(p => p.Genero == genero && !p.EhInfantil && p.Status == StatusProduto.Ativo)
             .Include(p => p.Imagens)
             .ToListAsync();
 
     public async Task<IEnumerable<Produto>> ObterInfantisComImagensAsync()
         => await _dbSet
-            .Where(p => p.EhInfantil)
+            .Where(p => p.EhInfantil && p.Status == StatusProduto.Ativo)
             .Include(p => p.Imagens)
             .ToListAsync();
 
@@ -31,4 +34,11 @@ public class ProdutoRepository : BaseRepository<Produto>, IProdutoRepository
             .Include(p => p.Estoques).ThenInclude(e => e.Tamanho)
             .Include(p => p.Categoria)
             .FirstOrDefaultAsync(p => p.Id == id);
+
+    public async Task<IEnumerable<Produto>> ObterTodosComDetalhesAsync()
+        => await _dbSet
+            .Include(p => p.Imagens)
+            .Include(p => p.Estoques)
+            .Include(p => p.Categoria)
+            .ToListAsync();
 }

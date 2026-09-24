@@ -15,4 +15,7 @@ public class CompraItemRepository : BaseRepository<CompraItem>, ICompraItemRepos
             .OrderByDescending(g => g.Sum(i => i.Quantidade))
             .Select(g => g.Key)
             .ToListAsync();
+
+    public async Task<bool> ProdutoJaVendidoAsync(int produtoId)
+        => await _context.CompraItens.AnyAsync(i => i.ProdutoId == produtoId);
 }

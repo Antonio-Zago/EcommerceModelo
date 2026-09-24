@@ -27,6 +27,9 @@ public class Produto
     [Column("eh_infantil")]
     public bool EhInfantil { get; set; }
 
+    [Column("status")]
+    public StatusProduto Status { get; set; } = StatusProduto.Ativo;
+
     [Column("data_cadastro")]
     public DateTime DataCadastro { get; set; }
 

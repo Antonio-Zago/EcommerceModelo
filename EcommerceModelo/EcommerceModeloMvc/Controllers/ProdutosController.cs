@@ -1,4 +1,5 @@
 using Application.BackgroundJobs;
+using Application.Dtos.Admin;
 using Application.Dtos.Importacao;
 using Application.Interfaces;
 using ClosedXML.Excel;
@@ -37,6 +38,126 @@ public class ProdutosController : Controller
         _importacaoQueue = importacaoQueue;
         _jobStore = jobStore;
         _env = env;
+    }
+
+    // ── Listagem administrativa ──────────────────────────────────────────────
+
+    public async Task<IActionResult> Listar()
+    {
+        var produtos = await _produtoService.ObterTodosComDetalhesAsync();
+
+        var viewModel = produtos
+            .OrderByDescending(p => p.DataCadastro)
+            .Select(p => new ProdutoAdminDto
+            {
+                Id = p.Id,
+                Nome = p.Nome,
+                Preco = p.Preco,
+                Categoria = p.Categoria?.Nome ?? string.Empty,
+                Genero = p.Genero.ToString(),
+                EhInfantil = p.EhInfantil,
+                Arquivado = p.Status == StatusProduto.Arquivado,
+                EstoqueTotal = p.Estoques.Sum(e => e.Quantidade),
+                ImagemPrincipalUrl = p.Imagens.FirstOrDefault(i => i.Principal)?.ImagemUrl
+                    ?? p.Imagens.FirstOrDefault()?.ImagemUrl
+                    ?? string.Empty
+            })
+            .ToList();
+
+        return View(viewModel);
+    }
+
+    // ── Editar produto ───────────────────────────────────────────────────────
+
+    public async Task<IActionResult> Editar(int id)
+    {
+        var produto = await _produtoService.ObterPorIdComDetalhesAsync(id);
+        if (produto is null)
+            return NotFound();
+
+        var viewModel = new EditarProdutoViewModel
+        {
+            Id = produto.Id,
+            Nome = produto.Nome,
+            Preco = produto.Preco,
+            Descricao = produto.Descricao,
+            CategoriaId = produto.CategoriaId,
+            Genero = produto.Genero,
+            EhInfantil = produto.EhInfantil,
+            Status = produto.Status,
+            JaVendido = await _produtoService.ProdutoJaVendidoAsync(produto.Id),
+            ImagemPrincipalId = produto.Imagens.FirstOrDefault(i => i.Principal)?.Id
+        };
+        PreencherDadosDeExibicao(viewModel, produto);
+
+        await PopularViewBagAsync();
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Duplicar(int id)
+    {
+        var copia = await _produtoService.DuplicarAsync(id, _env.WebRootPath);
+        if (copia is null)
+            return NotFound();
+
+        TempData["Sucesso"] = $"Produto \"{copia.Nome}\" duplicado com sucesso.";
+        return RedirectToAction(nameof(Editar), new { id = copia.Id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Arquivar(int id)
+    {
+        var arquivado = await _produtoService.ArquivarAsync(id);
+        if (!arquivado)
+            return NotFound();
+
+        TempData["Sucesso"] = "Produto arquivado com sucesso.";
+        return RedirectToAction(nameof(Listar));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Editar(EditarProdutoViewModel viewModel)
+    {
+        if (!ModelState.IsValid)
+            return await ReexibirEdicaoAsync(viewModel);
+
+        var dados = new Produto
+        {
+            Id = viewModel.Id,
+            Nome = viewModel.Nome,
+            Preco = viewModel.Preco,
+            Descricao = viewModel.Descricao,
+            CategoriaId = viewModel.CategoriaId,
+            Genero = viewModel.Genero,
+            EhInfantil = viewModel.EhInfantil,
+            Status = viewModel.Status
+        };
+
+        var quantidades = viewModel.Estoques.ToDictionary(e => e.Id, e => e.Quantidade);
+
+        try
+        {
+            var atualizado = await _produtoService.AtualizarComEstoqueAsync(dados, quantidades, viewModel.ImagemPrincipalId);
+            if (!atualizado)
+                return NotFound();
+
+            TempData["Sucesso"] = $"Produto \"{viewModel.Nome}\" atualizado com sucesso.";
+            return RedirectToAction(nameof(Listar));
+        }
+        catch (InvalidOperationException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return await ReexibirEdicaoAsync(viewModel);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, $"Erro ao atualizar produto: {ex.Message}");
+            return await ReexibirEdicaoAsync(viewModel);
+        }
     }
 
     // ── Cadastrar produto individual ─────────────────────────────────────────
@@ -321,6 +442,43 @@ public class ProdutosController : Controller
             })
             .Where(l => !string.IsNullOrWhiteSpace(l.Nome))
             .ToList();
+    }
+
+    private static void PreencherDadosDeExibicao(EditarProdutoViewModel viewModel, Produto produto)
+    {
+        viewModel.Estoques = produto.Estoques
+            .OrderBy(e => e.Tamanho?.Descricao)
+            .Select(e => new EstoqueEdicaoViewModel
+            {
+                Id = e.Id,
+                Tamanho = e.Tamanho?.Descricao ?? string.Empty,
+                Quantidade = e.Quantidade
+            })
+            .ToList();
+
+        viewModel.Imagens = produto.Imagens
+            .OrderByDescending(i => i.Principal)
+            .Select(i => new ImagemEdicaoViewModel { Id = i.Id, Url = i.ImagemUrl })
+            .ToList();
+    }
+
+    private async Task<IActionResult> ReexibirEdicaoAsync(EditarProdutoViewModel viewModel)
+    {
+        var produto = await _produtoService.ObterPorIdComDetalhesAsync(viewModel.Id);
+        if (produto is null)
+            return NotFound();
+
+        var quantidadesInformadas = viewModel.Estoques.ToDictionary(e => e.Id, e => e.Quantidade);
+        viewModel.JaVendido = await _produtoService.ProdutoJaVendidoAsync(produto.Id);
+        PreencherDadosDeExibicao(viewModel, produto);
+        foreach (var estoque in viewModel.Estoques)
+        {
+            if (quantidadesInformadas.TryGetValue(estoque.Id, out var quantidade))
+                estoque.Quantidade = quantidade;
+        }
+
+        await PopularViewBagAsync();
+        return View(viewModel);
     }
 
     private async Task PopularViewBagAsync()

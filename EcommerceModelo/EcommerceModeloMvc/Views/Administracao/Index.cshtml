@@ -17,15 +17,18 @@
 <h1 class="mb-4">Administração</h1>
 
 <div class="admin-menu-grid">
-    <a class="admin-menu-card" asp-controller="Produtos" asp-action="Cadastrar">
+    <a class="admin-menu-card" asp-controller="Produtos" asp-action="Listar">
         <div class="admin-menu-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 5v14M5 12h14"></path>
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
             </svg>
         </div>
         <div>
-            <div class="admin-menu-title">Cadastrar Produto</div>
-            <p class="admin-menu-description">Adicionar um novo produto ao catálogo.</p>
+            <div class="admin-menu-title">Produtos</div>
+            <p class="admin-menu-description">Visualizar todos os produtos cadastrados.</p>
         </div>
     </a>
 
