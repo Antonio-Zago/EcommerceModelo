@@ -127,3 +127,73 @@
     background: #333;
     color: #fff;
 }
+
+/* ── Avaliação de produtos ── */
+.btn-avaliar {
+    background: none;
+    border: 1px solid #111;
+    color: #111;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    padding: 0.25rem 0.75rem;
+    margin-left: 0.5rem;
+}
+
+.btn-avaliar:hover {
+    background: #111;
+    color: #fff;
+}
+
+.avaliacao-estrelas {
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.avaliacao-data {
+    display: block;
+    font-size: 0.72rem;
+    color: #888;
+    margin-top: 0.25rem;
+}
+
+.estrela-cheia { color: #f5a623; }
+.estrela-vazia { color: #ddd; }
+
+.avaliacao-produto-nome {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Estrelas em ordem reversa no HTML para o seletor "~" pintar as anteriores */
+.seletor-estrelas {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 0.25rem;
+    position: relative;
+}
+
+.seletor-estrelas input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.seletor-estrelas label {
+    font-size: 2rem;
+    line-height: 1;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.seletor-estrelas input:checked ~ label,
+.seletor-estrelas label:hover,
+.seletor-estrelas label:hover ~ label {
+    color: #f5a623;
+}
+
+.seletor-estrelas input:focus-visible + label {
+    outline: 2px solid #111;
+    outline-offset: 2px;
+}

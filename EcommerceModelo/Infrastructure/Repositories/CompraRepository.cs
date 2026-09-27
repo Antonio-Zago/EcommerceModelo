@@ -43,4 +43,10 @@ public class CompraRepository : BaseRepository<Compra>, ICompraRepository
             .Where(c => c.UsuarioId == usuarioId)
             .OrderByDescending(c => c.CriadoEm)
             .ToListAsync();
+
+    public async Task<bool> UsuarioComprouProdutoAsync(int usuarioId, int produtoId)
+        => await _context.CompraItens
+            .AnyAsync(i => i.ProdutoId == produtoId
+                && i.Compra.UsuarioId == usuarioId
+                && i.Compra.Status != "cancelado");
 }

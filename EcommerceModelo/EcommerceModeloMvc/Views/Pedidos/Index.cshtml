@@ -1,4 +1,4 @@
-@model IEnumerable<Domain.Models.Compra>
+@model EcommerceModeloMvc.ViewModels.PedidosViewModel
 @{
     ViewData["Title"] = "Meus Pedidos";
 
@@ -34,7 +34,23 @@
 <div class="pedidos-page">
     <h2 class="pedidos-titulo">Meus Pedidos</h2>
 
-    @if (!Model.Any())
+    @if (TempData["Sucesso"] is string sucesso)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @sucesso
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Erro"] is string erro)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @erro
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Pedidos.Any())
     {
         <div class="pedidos-vazio">
             <p>Você ainda não realizou nenhum pedido.</p>
@@ -44,8 +60,10 @@
     else
     {
         <div class="pedidos-lista">
-            @foreach (var pedido in Model)
+            @foreach (var pedido in Model.Pedidos)
             {
+                var podeAvaliar = pedido.Status != "cancelado";
+
                 <div class="pedido-card">
                     <div class="pedido-card-header">
                         <div>
@@ -66,16 +84,50 @@
                                     <th class="text-center">Qtd</th>
                                     <th class="text-end">Preço unit.</th>
                                     <th class="text-end">Subtotal</th>
+                                    @if (podeAvaliar)
+                                    {
+                                        <th class="text-end">Avaliação</th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in pedido.Itens)
                                 {
+                                    Model.Avaliacoes.TryGetValue(item.ProdutoId, out var avaliacao);
+
                                     <tr>
                                         <td>@item.NomeProduto</td>
                                         <td class="text-center">@item.Quantidade</td>
                                         <td class="text-end">R$ @item.PrecoUnitario.ToString("N2")</td>
                                         <td class="text-end">R$ @((item.PrecoUnitario * item.Quantidade).ToString("N2"))</td>
+                                        @if (podeAvaliar)
+                                        {
+                                            <td class="text-end">
+                                                @if (avaliacao is not null)
+                                                {
+                                                    <span class="avaliacao-estrelas" title="Sua nota: @avaliacao.Nota de 5">
+                                                        @for (var i = 1; i <= 5; i++)
+                                                        {
+                                                            <span class="@(i <= avaliacao.Nota ? "estrela-cheia" : "estrela-vazia")">&#9733;</span>
+                                                        }
+                                                    </span>
+                                                }
+                                                <button type="button"
+                                                        class="btn-avaliar"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalAvaliacao"
+                                                        data-produto-id="@item.ProdutoId"
+                                                        data-produto-nome="@item.NomeProduto"
+                                                        data-nota="@(avaliacao?.Nota ?? 0)"
+                                                        data-descricao="@avaliacao?.Descricao">
+                                                    @(avaliacao is null ? "Avaliar" : "Editar")
+                                                </button>
+                                                @if (avaliacao is not null)
+                                                {
+                                                    <span class="avaliacao-data">Avaliado em @avaliacao.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                                                }
+                                            </td>
+                                        }
                                     </tr>
                                 }
                             </tbody>
@@ -91,3 +143,39 @@
         </div>
     }
 </div>
+
+<div class="modal fade" id="modalAvaliacao" tabindex="-1" aria-labelledby="modalAvaliacaoTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" asp-action="Avaliar" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAvaliacaoTitulo">Avaliar produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="avaliacao-produto-nome" id="avaliacaoProdutoNome"></p>
+                <input type="hidden" name="ProdutoId" id="avaliacaoProdutoId" />
+
+                <label class="form-label d-block">Nota</label>
+                <div class="seletor-estrelas" role="radiogroup" aria-label="Nota de 1 a 5">
+                    @for (var i = 5; i >= 1; i--)
+                    {
+                        <input type="radio" name="Nota" id="nota-@i" value="@i" required />
+                        <label for="nota-@i" title="@i de 5">&#9733;</label>
+                    }
+                </div>
+
+                <label for="avaliacaoDescricao" class="form-label d-block mt-3">Comentário <span class="text-muted small">(opcional)</span></label>
+                <textarea class="form-control" name="Descricao" id="avaliacaoDescricao" rows="4" maxlength="2000"
+                          placeholder="Conte o que achou do produto"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn-continuar-comprando border-0">Enviar avaliação</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/avaliacaoPedidos.js" asp-append-version="true"></script>
+}

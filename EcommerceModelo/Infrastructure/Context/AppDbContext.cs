@@ -13,6 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<Produto> Produtos { get; set; }
     public DbSet<ProdutoImagem> ProdutoImagens { get; set; }
     public DbSet<ProdutoEstoque> ProdutoEstoques { get; set; }
+    public DbSet<ProdutoAvaliacao> ProdutoAvaliacoes { get; set; }
     public DbSet<TipoTamanho> TipoTamanhos { get; set; }
     public DbSet<OpcaoTamanho> OpcaoTamanhos { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
@@ -25,6 +26,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Produto>().ToTable("produtos");
         modelBuilder.Entity<ProdutoImagem>().ToTable("produto_imagens");
         modelBuilder.Entity<ProdutoEstoque>().ToTable("produto_estoque");
+        modelBuilder.Entity<ProdutoAvaliacao>().ToTable("produto_avaliacoes");
         modelBuilder.Entity<Compra>().ToTable("compras");
         modelBuilder.Entity<CompraItem>().ToTable("compras_itens");
         modelBuilder.Entity<TipoTamanho>().ToTable("tipos_tamanhos");
@@ -75,6 +77,16 @@ public class AppDbContext : DbContext
             .HasOne(e => e.Tamanho)
             .WithMany(o => o.Estoques)
             .HasForeignKey(e => e.TamanhoId);
+
+        modelBuilder.Entity<ProdutoAvaliacao>()
+            .HasOne(a => a.Produto)
+            .WithMany()
+            .HasForeignKey(a => a.ProdutoId);
+
+        modelBuilder.Entity<ProdutoAvaliacao>()
+            .HasOne(a => a.Usuario)
+            .WithMany()
+            .HasForeignKey(a => a.UsuarioId);
 
         modelBuilder.Entity<Produto>()
             .HasOne(p => p.Categoria)
