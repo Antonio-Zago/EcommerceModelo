@@ -17,6 +17,7 @@ public class ProdutosController : Controller
     private readonly IProdutoService _produtoService;
     private readonly ICategoriaService _categoriaService;
     private readonly IOpcaoTamanhoService _opcaoTamanhoService;
+    private readonly IProdutoAvaliacaoService _avaliacaoService;
     private readonly IImportacaoQueue _importacaoQueue;
     private readonly IJobStore _jobStore;
     private readonly IWebHostEnvironment _env;
@@ -28,6 +29,7 @@ public class ProdutosController : Controller
         IProdutoService produtoService,
         ICategoriaService categoriaService,
         IOpcaoTamanhoService opcaoTamanhoService,
+        IProdutoAvaliacaoService avaliacaoService,
         IImportacaoQueue importacaoQueue,
         IJobStore jobStore,
         IWebHostEnvironment env)
@@ -35,6 +37,7 @@ public class ProdutosController : Controller
         _produtoService = produtoService;
         _categoriaService = categoriaService;
         _opcaoTamanhoService = opcaoTamanhoService;
+        _avaliacaoService = avaliacaoService;
         _importacaoQueue = importacaoQueue;
         _jobStore = jobStore;
         _env = env;
@@ -242,6 +245,8 @@ public class ProdutosController : Controller
         if (produto is null)
             return NotFound();
 
+        var avaliacoes = await _avaliacaoService.ObterPorProdutoAsync(produto.Id);
+
         var viewModel = new DetalhesProdutoViewModel
         {
             Id          = produto.Id,
@@ -264,6 +269,16 @@ public class ProdutosController : Controller
                                 Tamanho    = e.Tamanho?.Descricao ?? string.Empty,
                                 Quantidade = e.Quantidade,
                                 Nome = e.Tamanho!.Descricao
+                            })
+                            .ToList(),
+            Avaliacoes  = avaliacoes
+                            .Select(a => new AvaliacaoViewModel
+                            {
+                                // Exibe só o primeiro nome para preservar a privacidade do cliente
+                                NomeUsuario = a.Usuario.Nome.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "Cliente",
+                                Nota        = a.Nota,
+                                Descricao   = a.Descricao,
+                                CriadoEm    = a.CriadoEm
                             })
                             .ToList()
         };

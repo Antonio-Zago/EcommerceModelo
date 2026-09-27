@@ -1,4 +1,5 @@
 @model DetalhesProdutoViewModel
+@using System.Globalization
 
 @{
     ViewData["Title"] = Model.Nome;
@@ -52,6 +53,15 @@
         </div>
 
         <div class="produto-preco">R$ @Model.Preco.ToString("N2")</div>
+
+        @if (Model.TotalAvaliacoes > 0)
+        {
+            <a href="#avaliacoes" class="avaliacao-resumo-link">
+                <span class="estrelas-media" style="--nota: @Model.MediaNotas.ToString("0.00", CultureInfo.InvariantCulture)" aria-hidden="true"></span>
+                <span>@Model.MediaNotas.ToString("0.0")</span>
+                <span class="text-muted">(@Model.TotalAvaliacoes @(Model.TotalAvaliacoes == 1 ? "avaliação" : "avaliações"))</span>
+            </a>
+        }
 
         <div class="produto-badges">
             <span class="badge-genero">@Model.Genero</span>
@@ -108,6 +118,65 @@
 
     </div>
 </div>
+
+@* ── Avaliações ── *@
+<section class="avaliacoes" id="avaliacoes">
+    <h2 class="avaliacoes-titulo">Avaliações</h2>
+
+    @if (Model.TotalAvaliacoes == 0)
+    {
+        <p class="avaliacoes-vazio">Este produto ainda não foi avaliado.</p>
+    }
+    else
+    {
+        <div class="avaliacoes-conteudo">
+            <div class="avaliacoes-resumo">
+                <div class="avaliacoes-media">@Model.MediaNotas.ToString("0.0")</div>
+                <span class="estrelas-media" style="--nota: @Model.MediaNotas.ToString("0.00", CultureInfo.InvariantCulture)"
+                      role="img" aria-label="Média @Model.MediaNotas.ToString("0.0") de 5"></span>
+                <div class="avaliacoes-total">@Model.TotalAvaliacoes @(Model.TotalAvaliacoes == 1 ? "avaliação" : "avaliações")</div>
+
+                <div class="avaliacoes-distribuicao">
+                    @for (var nota = 5; nota >= 1; nota--)
+                    {
+                        var quantidade = Model.QuantidadePorNota(nota);
+                        var percentual = quantidade * 100.0 / Model.TotalAvaliacoes;
+
+                        <div class="distribuicao-linha">
+                            <span class="distribuicao-nota">@nota &#9733;</span>
+                            <div class="distribuicao-barra">
+                                <div style="width: @percentual.ToString("0.#", CultureInfo.InvariantCulture)%"></div>
+                            </div>
+                            <span class="distribuicao-qtd">@quantidade</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <ul class="avaliacoes-lista">
+                @foreach (var avaliacao in Model.Avaliacoes)
+                {
+                    <li class="avaliacao-item">
+                        <div class="avaliacao-cabecalho">
+                            <span class="avaliacao-estrelas" role="img" aria-label="Nota @avaliacao.Nota de 5">
+                                @for (var i = 1; i <= 5; i++)
+                                {
+                                    <span class="@(i <= avaliacao.Nota ? "estrela-cheia" : "estrela-vazia")">&#9733;</span>
+                                }
+                            </span>
+                            <span class="avaliacao-autor">@avaliacao.NomeUsuario</span>
+                            <span class="avaliacao-data">@avaliacao.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(avaliacao.Descricao))
+                        {
+                            <p class="avaliacao-texto">@avaliacao.Descricao</p>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</section>
 
 @section Scripts {
 <script>

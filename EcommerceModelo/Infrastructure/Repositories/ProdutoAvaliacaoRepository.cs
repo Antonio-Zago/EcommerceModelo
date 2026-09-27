@@ -15,6 +15,14 @@ public class ProdutoAvaliacaoRepository : BaseRepository<ProdutoAvaliacao>, IPro
             .Where(a => a.UsuarioId == usuarioId)
             .ToListAsync();
 
+    public async Task<IEnumerable<ProdutoAvaliacao>> ObterPorProdutoAsync(int produtoId)
+        => await _dbSet
+            .AsNoTracking()
+            .Include(a => a.Usuario)
+            .Where(a => a.ProdutoId == produtoId)
+            .OrderByDescending(a => a.CriadoEm)
+            .ToListAsync();
+
     public async Task<ProdutoAvaliacao?> ObterPorUsuarioEProdutoAsync(int usuarioId, int produtoId)
         => await _dbSet
             .FirstOrDefaultAsync(a => a.UsuarioId == usuarioId && a.ProdutoId == produtoId);

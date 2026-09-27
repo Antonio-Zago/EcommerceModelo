@@ -19,6 +19,9 @@ public class ProdutoAvaliacaoService : BaseService<ProdutoAvaliacao>, IProdutoAv
     public Task<IEnumerable<ProdutoAvaliacao>> ObterPorUsuarioAsync(int usuarioId)
         => _avaliacaoRepository.ObterPorUsuarioAsync(usuarioId);
 
+    public Task<IEnumerable<ProdutoAvaliacao>> ObterPorProdutoAsync(int produtoId)
+        => _avaliacaoRepository.ObterPorProdutoAsync(produtoId);
+
     // Cria a avaliação ou atualiza a existente — cada usuário tem uma avaliação por produto
     public async Task AvaliarAsync(int usuarioId, AvaliarProdutoDto avaliacao)
     {

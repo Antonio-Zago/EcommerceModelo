@@ -6,5 +6,6 @@ namespace Application.Interfaces;
 public interface IProdutoAvaliacaoService : IBaseService<ProdutoAvaliacao>
 {
     Task<IEnumerable<ProdutoAvaliacao>> ObterPorUsuarioAsync(int usuarioId);
+    Task<IEnumerable<ProdutoAvaliacao>> ObterPorProdutoAsync(int produtoId);
     Task AvaliarAsync(int usuarioId, AvaliarProdutoDto avaliacao);
 }
