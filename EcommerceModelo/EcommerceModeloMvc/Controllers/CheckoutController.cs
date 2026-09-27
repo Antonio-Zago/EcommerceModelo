@@ -1,6 +1,7 @@
 using Application.Dtos.Checkout;
 using Application.Interfaces;
 using Domain.Interfaces;
+using Domain.Models;
 using EcommerceModeloMvc.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,10 @@ public class CheckoutController : Controller
         if (!carrinho.Itens.Any())
             return RedirectToAction("Index", "Carrinho");
 
+        var errosEstoque = await _checkoutService.VerificarEstoqueAsync(carrinho);
+        if (errosEstoque.Count > 0)
+            return RedirecionarCarrinhoComErros(errosEstoque);
+
         return View(new CheckoutViewModel { Carrinho = carrinho });
     }
 
@@ -58,10 +63,23 @@ public class CheckoutController : Controller
         if (!carrinho.Itens.Any())
             return RedirectToAction("Index", "Carrinho");
 
+        var errosEstoque = await _checkoutService.VerificarEstoqueAsync(carrinho);
+        if (errosEstoque.Count > 0)
+            return RedirecionarCarrinhoComErros(errosEstoque);
+
         if (!ModelState.IsValid)
             return View("Index", new CheckoutViewModel { Carrinho = carrinho, Pedido = pedido });
 
-        var compra = await _checkoutService.ConfirmarPedidoAsync(UsuarioId(), pedido, carrinho);
+        Compra compra;
+        try
+        {
+            compra = await _checkoutService.ConfirmarPedidoAsync(UsuarioId(), pedido, carrinho);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return RedirecionarCarrinhoComErros([ex.Message]);
+        }
+
         await _carrinhoService.LimparCarrinhoAsync(UsuarioId());
 
         return RedirectToAction(nameof(Confirmado), new { id = compra.Id });
@@ -75,6 +93,12 @@ public class CheckoutController : Controller
             return NotFound();
 
         return View(compra);
+    }
+
+    private IActionResult RedirecionarCarrinhoComErros(IReadOnlyList<string> erros)
+    {
+        TempData["ErrosEstoque"] = erros.ToArray();
+        return RedirectToAction("Index", "Carrinho");
     }
 
     private int UsuarioId() =>

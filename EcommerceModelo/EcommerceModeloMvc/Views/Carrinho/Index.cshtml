@@ -16,6 +16,19 @@
         </div>
     }
 
+    @if (TempData["ErrosEstoque"] is string[] errosEstoque && errosEstoque.Length > 0)
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>Não foi possível finalizar o pedido:</strong>
+            <ul class="mb-0 mt-1">
+                @foreach (var erro in errosEstoque)
+                {
+                    <li>@erro</li>
+                }
+            </ul>
+        </div>
+    }
+
     @if (!Model.Itens.Any())
     {
         <div class="carrinho-vazio">
